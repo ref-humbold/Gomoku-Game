@@ -18,7 +18,8 @@ Gomoku requires at least **[OCaml version 4.02](https://ocaml.org/docs/install.h
 
 ### How to build?
 Gomoku can be built with **[Dune](https://dune.build/)** with help of **[GNU Make](https://www.gnu.org/software/make/)**. Possible GNU Make targets are
-+ `make` - same as `ant all`
++ `make` - same as `make all`
++ `make gomoku` - same as `make all`
 + `make refresh` - same as `make clean all`
 + `make clean` - remove additional build files
 + `make all` - compile source files, create executable
