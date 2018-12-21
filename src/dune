@@ -1,7 +1,9 @@
 (executable
-    (name gomoku)
+    (name main)
     (public_name gomoku)
     (libraries graphics)
     (modes native)
     (flags (-w A))
 )
+
+(include_subdirs unqualified)
