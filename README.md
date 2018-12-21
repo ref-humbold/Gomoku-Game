@@ -12,7 +12,7 @@ LET'S PLAY GOMOKU!
 
 ### Dependencies
 Gomoku requires at least **[OCaml version 4.02](https://ocaml.org/docs/install.html)** installed. There are additional libraries required:
-+ Ocaml Graphics
++ OCaml Graphics
 
 ----
 
