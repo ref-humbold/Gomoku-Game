@@ -15,4 +15,4 @@ refresh : clean all
 gomoku :
 	dune build
 	@mkdir -p $(BIN)
-	@ln -fs $(BUILD)/$(EXEC) $(BIN)/$(EXEC)
+	@ln -sfn ../$(BUILD)/$(EXEC) $(BIN)/$(EXEC)
