@@ -1,4 +1,5 @@
-GOMOKU = _build/install/default/bin/gomoku
+DIR = _build/install/default/bin
+EXEC = gomoku
 
 .PHONY : all clean refresh
 
@@ -12,4 +13,4 @@ refresh : clean all
 
 gomoku :
 	dune build
-	@ln -s $(GOMOKU) gomoku
+	@ln -s $(DIR)/$(EXEC) bin/$(EXEC)
