@@ -3,7 +3,12 @@
     (public_name gomoku)
     (libraries graphics)
     (modes native)
-    (flags (-w +A))
+)
+
+(env
+    (dev
+        (flags (:standard -warn-error -A -w +A))
+    )
 )
 
 (include_subdirs unqualified)

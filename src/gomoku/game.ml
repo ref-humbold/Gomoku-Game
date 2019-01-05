@@ -1,4 +1,4 @@
-let win gameboard size player (row, col) =
+let check_winner gameboard size player (row, col) =
   let get_row row' gameboard' =
     List.nth gameboard' row'
   and get_column col' gameboard' =
@@ -57,11 +57,11 @@ let end_game (winner, mvh, mvc) =
   end
 
 let play_game size gameboard =
-  let rec turn (mvh, mvc) last player gameboard' =
+  let rec turn (mvh, mvc) last_pos player gameboard' =
     let move_pos =
       match player with
       | Board.Human -> Human_player.move size gameboard'
-      | Board.Comp -> Comp_player.move last size gameboard' in
+      | Board.Comp -> Comp_player.move last_pos size gameboard' in
     let move_nums =
       match player with
       | Board.Human -> (mvh + 1, mvc)
@@ -69,7 +69,7 @@ let play_game size gameboard =
     let new_gameboard = Board.set_move move_pos player gameboard' in
     begin
       Game_gui.draw_stone size player move_pos;
-      match win new_gameboard size player move_pos with
+      match check_winner new_gameboard size player move_pos with
       | None -> turn move_nums move_pos (Board.opponent player) new_gameboard
       | Some player -> (player, fst move_nums, snd move_nums)
     end in
