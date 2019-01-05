@@ -3,7 +3,7 @@ let buttons = (Gui.Btn {xc=Gui.ratio 3 4; yc=Gui.ratio 2 16;
                         label="POWROT"; colour=Graphics.red},
                Gui.Btn {xc=Gui.ratio 1 4; yc=Gui.ratio 2 16;
                         width=160; height=50;
-                        label="WYCZYSC"; colour=Graphics.blue});;
+                        label="WYCZYSC"; colour=Graphics.blue})
 
 let rec check_click () =
   let mouse_pos = Gui.mouse_click () in
@@ -15,7 +15,7 @@ let rec check_click () =
       Stat.clear ();
       1
     end
-  else check_click ();;
+  else check_click ()
 
 let display () =
   let stat_rcd = Stat.read () in
@@ -49,4 +49,4 @@ let display () =
         ("KOMPUTERA: " ^ (string_of_int cmoves));
       Gui.draw_button @@ fst buttons;
       Gui.draw_button @@ snd buttons
-    end;;
+    end

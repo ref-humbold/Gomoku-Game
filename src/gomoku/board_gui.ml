@@ -15,17 +15,17 @@ let buttons = [Gui.Btn {xc=Gui.ratio 1 4; yc=Gui.ratio 3 4;
                         label="23 x 23"; colour=Graphics.green};
                Gui.Btn {xc=Gui.ratio 3 4; yc=Gui.ratio 1 4;
                         width=200; height=100;
-                        label="25 x 25"; colour=Graphics.green}];;
+                        label="25 x 25"; colour=Graphics.green}]
 
 let text = Gui.Txt {xc=Gui.ratio 1 2; yc=Gui.ratio 9 10;
-                    label="WYBIERZ ROZMIAR PLANSZY"; colour=Graphics.black};;
+                    label="WYBIERZ ROZMIAR PLANSZY"; colour=Graphics.black}
 
 let display () =
   begin
     Gui.clear_window Graphics.cyan;
     Gui.draw_text text;
     Gui.draw_buttons buttons
-  end;;
+  end
 
 let rec choose_size () =
   let mouse_pos = Gui.mouse_click () in
@@ -38,4 +38,4 @@ let rec choose_size () =
   let boardsize = get_size clicked 15 in
   if boardsize > 0
   then boardsize
-  else choose_size ();;
+  else choose_size ()

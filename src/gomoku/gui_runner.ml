@@ -19,4 +19,4 @@ and run_board () =
     Board_gui.display ();
     run_game @@ Board_gui.choose_size ()
   end
-and exit () = ();;
+and exit () = ()

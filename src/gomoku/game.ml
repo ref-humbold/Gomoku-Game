@@ -40,7 +40,7 @@ let win gameboard size player (row, col) =
      get_diff_diag (row' - col') gameboard'] in
   if List.exists check @@ get_all row col gameboard
   then Some player
-  else None;;
+  else None
 
 let start_game size =
   begin
@@ -48,13 +48,13 @@ let start_game size =
     Comp_player.clear ();
     Game_gui.display size;
     Board.create @@ size + 2
-  end;;
+  end
 
 let end_game (winner, mvh, mvc) =
   begin
     Stat.update_data winner mvh mvc;
     Game_gui.return winner
-  end;;
+  end
 
 let play_game size gameboard =
   let rec turn (mvh, mvc) last player gameboard' =
@@ -73,9 +73,9 @@ let play_game size gameboard =
       | None -> turn move_nums move_pos (Board.opponent player) new_gameboard
       | Some player -> (player, fst move_nums, snd move_nums)
     end in
-  turn (0, 0) (0, 0) Board.Human gameboard;;
+  turn (0, 0) (0, 0) Board.Human gameboard
 
 let run size =
   let gameboard = start_game size in
   let game_result = play_game size gameboard in
-  end_game game_result;;
+  end_game game_result

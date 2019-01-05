@@ -1,8 +1,8 @@
-type player_t = Human | Comp;;
-type gameboard_t = player_t option option list list;;
+type player_t = Human | Comp
+type gameboard_t = player_t option option list list
 
-exception Incorrect_gameboard of string;;
-exception Incorrect_player of string;;
+exception Incorrect_gameboard of string
+exception Incorrect_player of string
 
 let create size =
   let rec create_row rownum i acc =
@@ -15,7 +15,7 @@ let create size =
     if rownum = 0
     then acc
     else create_board (rownum - 1) @@ (create_row rownum size [])::acc in
-  create_board size [];;
+  create_board size []
 
 let set_move (row, col) player game =
   let rec set_col n row' =
@@ -32,14 +32,14 @@ let set_move (row, col) player game =
       if n = 0
       then (set_col col x)::xs
       else x::(set_row (n - 1) xs) in
-  set_row row game;;
+  set_row row game
 
 let opponent player =
   match player with
   | Human -> Comp
-  | Comp -> Human;;
+  | Comp -> Human
 
 let is_free (row, col) gameboard =
   match List.nth (List.nth gameboard row) col with
   | None -> true
-  | Some _ -> false;;
+  | Some _ -> false

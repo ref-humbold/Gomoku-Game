@@ -2,7 +2,7 @@ type direction_t =
   | Row of int
   | Column of int
   | Sum of int
-  | Diff of int;;
+  | Diff of int
 
 type move_t =
   | Comp_make_five of int * int
@@ -11,14 +11,14 @@ type move_t =
   | Comp_make_more of int * int
   | Comp_make_four of int * int
   | Human_make_four of int * int
-  | Any;;
+  | Any
 
 let compare_moves m1 m2 =
   match (m1, m2) with
   | (Any, Any) -> 0
   | (Any, _) -> 1
   | (_, Any) -> -1
-  | (_, _) -> compare m1 m2;;
+  | (_, _) -> compare m1 m2
 
 let extract_sum_diag sum size gameboard =
   let rec extract_sum i g acc =
@@ -39,8 +39,8 @@ and extract_diff_diag diff size gameboard =
       else extract_diff (i + 1) rws @@ (List.nth rw (i - diff))::acc in
   extract_diff 0 gameboard []
 
-let move_queue = ref [Any];;
-let last_move = ref (0, 0);;
+let move_queue = ref [Any]
+let last_move = ref (0, 0)
 
 let get_row row gameboard =
   (List.nth gameboard row, Row row, 0)
@@ -51,15 +51,15 @@ and get_sum_diag size sum gameboard =
   (extract_sum_diag sum size gameboard, Sum sum, beg_row)
 and get_diff_diag size diff gameboard =
   let beg_row = if diff <= 0 then 0 else diff in
-  (extract_diff_diag diff size gameboard, Diff diff, beg_row);;
+  (extract_diff_diag diff size gameboard, Diff diff, beg_row)
 
-let random_element lst = List.nth lst @@ Random.int @@ List.length lst;;
+let random_element lst = List.nth lst @@ Random.int @@ List.length lst
 
 let compare_positions (n1, p1) (n2, p2) =
   let nc = compare n1 n2 in
   if nc = 0
   then compare p1 p2
-  else -nc;;
+  else -nc
 
 let count_points lst =
   let rec cnt num lst' =
@@ -70,7 +70,7 @@ let count_points lst =
       else (num, x1)::(cnt 1 xt)
     | [(x, _)] -> [(num, x)]
     | [] -> [] in
-  List.sort compare_positions @@ cnt 1 @@ List.sort compare lst;;
+  List.sort compare_positions @@ cnt 1 @@ List.sort compare lst
 
 let count_nums lst =
   let rec cnt num lst' =
@@ -81,7 +81,7 @@ let count_nums lst =
       else (x1, num)::(cnt 1 xt)
     | [x] -> [(x, num)]
     | [] -> [] in
-  List.sort compare @@ cnt 1 @@ List.sort compare lst;;
+  List.sort compare @@ cnt 1 @@ List.sort compare lst
 
 let get_empties size gameboard =
   let neighbours row col =
@@ -124,7 +124,7 @@ let get_empties size gameboard =
     if row_i >= 1 && row_i <= size
     then map_row empty row_i row
     else [] in
-  List.concat @@ List.mapi row_empty gameboard;;
+  List.concat @@ List.mapi row_empty gameboard
 
 let check_win_situation size player (row, col) gameboard =
   let pos_by dir num =
@@ -168,7 +168,7 @@ let check_win_situation size player (row, col) gameboard =
                        get_column c g;
                        get_sum_diag size (r + c) g;
                        get_diff_diag size (r - c) g] in
-  List.concat @@ List.map (check []) @@ get_all row col gameboard;;
+  List.concat @@ List.map (check []) @@ get_all row col gameboard
 
 let check_board_situation size player gameboard =
   let rec check acc lst =
@@ -201,7 +201,7 @@ let check_board_situation size player gameboard =
                                get_columns g;
                                get_sum_diags g;
                                get_diff_diags g] in
-  count_nums @@ List.concat @@ List.map (check []) @@ get_all gameboard;;
+  count_nums @@ List.concat @@ List.map (check []) @@ get_all gameboard
 
 let numbered player situation =
   match count_points situation with
@@ -210,7 +210,7 @@ let numbered player situation =
       | Board.Human -> Human_make_more (p1, p2)
       | Board.Comp -> Comp_make_more (p1, p2)
     )
-  | _ -> Any;;
+  | _ -> Any
 
 let make_five player situation =
   let make_five_list = List.filter (fun (_, t) -> t = 5) situation in
@@ -221,7 +221,7 @@ let make_five player situation =
       | Board.Human -> Human_make_five (p1, p2)
       | Board.Comp -> Comp_make_five (p1, p2)
     )
-  | [] -> Any;;
+  | [] -> Any
 
 let make_four player situation =
   let make_four_list = List.filter (fun (_, t) -> t = 4) situation in
@@ -232,7 +232,7 @@ let make_four player situation =
       | Board.Human -> Human_make_four (p1, p2)
       | Board.Comp -> Comp_make_four (p1, p2)
     )
-  | [] -> Any;;
+  | [] -> Any
 
 let heura size gameboard =
   let comp_sit = check_board_situation size Board.Comp gameboard
@@ -246,7 +246,7 @@ let heura size gameboard =
         | Not_found -> (n, 0) in
       let sit_diff = (snd @@ for_player human_sit) - (snd @@ for_player comp_sit) in
       sit_diff::(diffs @@ n - 1) in
-  List.fold_right (fun e a -> (float_of_int e) +. 1.5 *. a) (diffs 5) 0.0;;
+  List.fold_right (fun e a -> (float_of_int e) +. 1.5 *. a) (diffs 5) 0.0
 
 let heuristic_move size gameboard =
   let cmp f (pm, xm) (pa, xa) =
@@ -286,19 +286,19 @@ let heuristic_move size gameboard =
       match player with
       | Board.Comp -> find_res a b empty_pos ((0, 0), neg_infinity)
       | Board.Human -> find_res a b empty_pos ((0, 0), infinity) in
-  fst @@ forward_move 4 neg_infinity infinity Board.Comp gameboard;;
+  fst @@ forward_move 4 neg_infinity infinity Board.Comp gameboard
 
 let analyze size human_move gameboard =
   let analyze' player mv =
     let sit = check_win_situation size player mv gameboard in
     [numbered player sit; make_five player sit; make_four player sit] in
-  List.sort compare_moves @@ (analyze' Board.Human human_move)@(analyze' Board.Comp (!last_move));;
+  List.sort compare_moves @@ (analyze' Board.Human human_move)@(analyze' Board.Comp (!last_move))
 
 let clear () =
   begin
     move_queue := [Any];
     last_move := (0, 0)
-  end;;
+  end
 
 let move human_move size gameboard =
   let analyzed = analyze size human_move gameboard in
@@ -338,4 +338,4 @@ let move human_move size gameboard =
   begin
     last_move := move_pos;
     move_pos
-  end;;
+  end
