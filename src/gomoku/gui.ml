@@ -1,6 +1,7 @@
 type button_t = Btn of {xc: int; yc: int;
                         width: int; height: int;
                         label: string; colour: Graphics.color}
+
 type text_t = Txt of {xc: int; yc: int;
                       label: string; colour: Graphics.color}
 

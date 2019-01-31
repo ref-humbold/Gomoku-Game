@@ -1,7 +1,9 @@
 type player_t = Human | Comp
+
 type gameboard_t = player_t option option list list
 
 exception Incorrect_gameboard of string
+
 exception Incorrect_player of string
 
 let create size =
