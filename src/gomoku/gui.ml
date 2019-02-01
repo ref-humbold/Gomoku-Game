@@ -1,9 +1,7 @@
-type button = Btn of {xc: int; yc: int;
-                      width: int; height: int;
+type button = Btn of {xc: int; yc: int; width: int; height: int;
                       label: string; colour: Graphics.color}
 
-type text = Txt of {xc: int; yc: int;
-                    label: string; colour: Graphics.color}
+type text = Txt of {xc: int; yc: int; label: string; colour: Graphics.color}
 
 let window_size = 800
 

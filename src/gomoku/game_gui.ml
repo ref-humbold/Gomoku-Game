@@ -71,13 +71,11 @@ let return winner =
     match winner with
     | Board.Human -> Gui.draw_text @@ fst texts
     | Board.Comp -> Gui.draw_text @@ snd texts in
-  let rec ret () =
+  let rec check_click () =
     let mouse_pos = Gui.mouse_click () in
-    if Gui.check_button_clicked mouse_pos button
-    then ()
-    else ret () in
+    if Gui.check_button_clicked mouse_pos button then () else check_click () in
   begin
     print_winner ();
     Gui.draw_button button;
-    ret ()
+    check_click ()
   end
