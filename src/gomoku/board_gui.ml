@@ -32,8 +32,8 @@ let rec choose_size () =
   let clicked = List.map (Gui.check_button_clicked mouse_pos) buttons in
   let rec get_size lst size =
     match lst with
-    | true::_ -> size
-    | false::xs -> get_size xs @@ size + 2
+    | true :: _ -> size
+    | false :: xs -> get_size xs @@ size + 2
     | [] -> 0 in
   let boardsize = get_size clicked 15 in
   if boardsize > 0

@@ -32,7 +32,7 @@ let encode stat_rcd =
     match lst with
     | [] -> res
     | [x] -> res ^ (encode_num x)
-    | (x::xs) ->
+    | x :: xs ->
       let base = Char.code @@ str_case () in
       let sep = String.make 1 @@ Char.chr @@ 2 * (Random.int 16) + base - 3 in
       cncmap xs @@ res ^ (encode_num x) ^ sep in
@@ -41,7 +41,7 @@ let encode stat_rcd =
 let decode str =
   let rec split str' i act res =
     if i = String.length str'
-    then (List.rev act)::res
+    then (List.rev act) :: res
     else
       let cd = (Char.code str'.[i]) mod 32 in
       let cd' =
@@ -52,13 +52,13 @@ let decode str =
       | None ->
         ( match act with
           | [] -> split str' (i + 1) [] res
-          | _ -> split str' (i + 1) [] @@ (List.rev act)::res
+          | _ -> split str' (i + 1) [] @@ (List.rev act) :: res
         )
-      | Some x -> split str' (i + 1) (x::act) res in
+      | Some x -> split str' (i + 1) (x :: act) res in
   let rec make_int res lst =
     match lst with
     | [] -> res
-    | x::xs -> make_int (res * 10 + x) xs in
+    | x :: xs -> make_int (res * 10 + x) xs in
   let stat_from_list lst =
     match lst with
     | [hmoves_num; cmoves_num; won_num; lost_num;

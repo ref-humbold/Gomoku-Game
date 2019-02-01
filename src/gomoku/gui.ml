@@ -11,17 +11,15 @@ let window_title = "GOMOKU!!!"
 
 let ratio n d =
   let rec gcd a b =
-    if a = 0
-    then b
-    else if a > b
-    then gcd b a
+    if a = 0 then b
+    else if a > b then gcd b a
     else gcd (b mod a) a in
   let n' = n / (gcd n d)
   and d' = d / (gcd n d) in
   n' * window_size / d'
 
 let center_text (Txt {xc; yc; label; _}) =
-  let (xt, yt) = Graphics.text_size label in
+  let xt, yt = Graphics.text_size label in
   (xc - xt / 2, yc - yt / 2)
 
 let new_window () =
@@ -39,7 +37,7 @@ let clear_window colour =
   end
 
 let draw_text (Txt {label; colour; _} as text) =
-  let (x, y) = center_text text in
+  let x, y = center_text text in
   begin
     Graphics.set_color colour;
     Graphics.moveto x y;

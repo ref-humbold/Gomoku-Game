@@ -25,10 +25,8 @@ let rec click_button () =
   let clicked = List.map (Gui.check_button_clicked mouse_pos) buttons in
   let rec choose_action lst i =
     match lst with
-    | true::_ -> i
-    | false::xs -> choose_action xs @@ i + 1
+    | true :: _ -> i
+    | false :: xs -> choose_action xs @@ i + 1
     | [] -> -1 in
   let index = choose_action clicked 0 in
-  if index >= 0
-  then index
-  else click_button ()
+  if index >= 0 then index else click_button ()

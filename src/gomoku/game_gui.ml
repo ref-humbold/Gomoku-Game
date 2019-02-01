@@ -19,18 +19,18 @@ let get_lines size =
   and half = Gui.ratio 1 2 in
   let rec get_lines' i acc =
     if i + cols >= 0
-    then get_lines' (i - 1) @@ (half + step * i)::acc
+    then get_lines' (i - 1) @@ (half + step * i) :: acc
     else acc in
   get_lines' cols []
 
 let norm size (x, y) =
-  let (_, endline) = get_borders size in
+  let _, endline = get_borders size in
   let norm' w = (w - endline + step / 2) / step in
   (norm' x, norm' y)
 
 let display size =
   let pos = get_lines size
-  and (pbeg, pend) = get_borders size in
+  and pbeg, pend = get_borders size in
   let draw_line width pos =
     begin
       Graphics.set_line_width width;
@@ -48,7 +48,7 @@ let display size =
   end
 
 let draw_stone size player (row, col) =
-  let (_, endline) = get_borders size in
+  let _, endline = get_borders size in
   let stone_colour =
     match player with
     | Board.Human -> Graphics.white
@@ -61,7 +61,7 @@ let draw_stone size player (row, col) =
   end
 
 let rec choose_stone size =
-  let (px, py) = norm size @@ Gui.mouse_click () in
+  let px, py = norm size @@ Gui.mouse_click () in
   if px >= 1 && px <= size && py >= 1 && py <= size
   then (py, px)
   else choose_stone size

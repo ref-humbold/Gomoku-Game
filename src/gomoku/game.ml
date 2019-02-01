@@ -7,31 +7,31 @@ let check_winner gameboard size player (row, col) =
     let rec gs i gameboard'' acc =
       match gameboard'' with
       | [] -> List.rev acc
-      | row'::rows' ->
+      | row' :: rows' ->
         if sum - i < 0 || sum - i > size + 1
         then gs (i + 1) rows' acc
-        else gs (i + 1) rows' @@ (List.nth row' @@ sum - i)::acc in
+        else gs (i + 1) rows' @@ (List.nth row' @@ sum - i) :: acc in
     gs 0 gameboard' []
   and get_diff_diag diff gameboard' =
     let rec gd i gameboard'' acc =
       match gameboard'' with
       | [] -> List.rev acc
-      | row'::rows' ->
+      | row' :: rows' ->
         if i - diff < 0 || i - diff > size + 1
         then gd (i + 1) rows' acc
-        else gd (i + 1) rows' @@ (List.nth row' @@ i - diff)::acc in
+        else gd (i + 1) rows' @@ (List.nth row' @@ i - diff) :: acc in
     gd 0 gameboard' [] in
   let rec check lst =
     match lst with
-    | None::Some t1::Some t2::Some t3::Some t4::Some t5::None::_ when
+    | None :: Some t1 :: Some t2 :: Some t3 :: Some t4 :: Some t5 :: None :: _ when
         Some player = t1 && t1 = t2 && t2 = t3 && t3 = t4 && t4 = t5 -> true
-    | Some t0::Some t1::Some t2::Some t3::Some t4::Some t5::None::_ when
+    | Some t0 :: Some t1 :: Some t2 :: Some t3 :: Some t4 :: Some t5 :: None :: _ when
         Some player = t1 && t1 = t2 && t2 = t3 && t3 = t4 && t4 = t5 && t1 <> t0 -> true
-    | None::Some t1::Some t2::Some t3::Some t4::Some t5::Some t6::_ when
+    | None :: Some t1 :: Some t2 :: Some t3 :: Some t4 :: Some t5 :: Some t6 :: _ when
         Some player = t1 && t1 = t2 && t2 = t3 && t3 = t4 && t4 = t5 && t1 <> t6 -> true
-    | Some t0::Some t1::Some t2::Some t3::Some t4::Some t5::Some t6::_ when
+    | Some t0 :: Some t1 :: Some t2 :: Some t3 :: Some t4 :: Some t5 :: Some t6 :: _ when
         Some player = t1 && t1 = t2 && t2 = t3 && t3 = t4 && t4 = t5 && t1 <> t0 && t1 <> t6 -> true
-    | _::ps -> check ps
+    | _ :: ps -> check ps
     | [] -> false in
   let get_all row' col' gameboard' =
     [get_row row' gameboard';
