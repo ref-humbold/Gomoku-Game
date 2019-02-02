@@ -5,7 +5,8 @@ let buttons = (Gui.Btn {xc=Gui.ratio 3 4; yc=Gui.ratio 2 16; width=160; height=5
 
 let rec check_click () =
   let mouse_pos = Gui.mouse_click () in
-  if Gui.check_button_clicked mouse_pos @@ fst buttons then 0
+  if Gui.check_button_clicked mouse_pos @@ fst buttons
+  then 0
   else if Gui.check_button_clicked mouse_pos @@ snd buttons
   then
     begin

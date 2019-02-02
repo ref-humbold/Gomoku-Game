@@ -73,7 +73,9 @@ let return winner =
     | Board.Comp -> Gui.draw_text @@ snd texts in
   let rec check_click () =
     let mouse_pos = Gui.mouse_click () in
-    if Gui.check_button_clicked mouse_pos button then () else check_click () in
+    if Gui.check_button_clicked mouse_pos button
+    then ()
+    else check_click () in
   begin
     print_winner ();
     Gui.draw_button button;

@@ -9,8 +9,10 @@ let window_title = "GOMOKU!!!"
 
 let ratio n d =
   let rec gcd a b =
-    if a = 0 then b
-    else if a > b then gcd b a
+    if a = 0
+    then b
+    else if a > b
+    then gcd b a
     else gcd (b mod a) a in
   let n' = n / (gcd n d) in
   let d' = d / (gcd n d) in
