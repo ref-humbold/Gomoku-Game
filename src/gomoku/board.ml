@@ -18,11 +18,11 @@ let create_board size =
        else create_row row (col - 1) @@ Empty :: acc in *)
     then create_row row (col - 1) @@ (Some None) :: acc
     else create_row row (col - 1) @@ None :: acc in
-  let rec create_board row acc =
+  let rec create row acc =
     if row = 0
     then acc
-    else create_board (row - 1) @@ (create_row row size []) :: acc in
-  create_board size []
+    else create (row - 1) @@ (create_row row size []) :: acc in
+  create size []
 
 let set_move (row, col) player game =
   let rec set_col n row' =
