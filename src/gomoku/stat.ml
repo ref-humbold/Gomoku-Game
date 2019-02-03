@@ -7,36 +7,36 @@ exception Stat_format_error of string
 
 let filename = ".gomoku.stat"
 
-let case_base () = if Random.bool () then 'A' else 'a'
+let str_case () = if Random.bool () then 'A' else 'a'
 
 let encode_num num =
   let enc num' res =
     if num' = 0
-    then String.make 1 @@ case_base ()
+    then String.make 1 @@ str_case ()
     else
       let rec enc' num'' res' =
         if num'' = 0
         then res'
         else
           let n = num'' mod 10 in
-          let base = Char.code @@ case_base () in
-          let str = String.make 1 @@ Char.chr @@ 2 * n + base in
-          enc' (num'' / 10) @@ str ^ res' in
+          let base = Char.code @@ str_case () in
+          let newres = (String.make 1 @@ Char.chr @@ 2 * n + base) ^ res' in
+          enc' (num'' / 10) newres in
       enc' num' res in
   enc num ""
 
 let encode stat_rcd =
-  let list_of_stat (St {hmoves; cmoves; won; lost; thmoves; tcmoves; opened}) =
+  let stat_to_list (St {hmoves; cmoves; won; lost; thmoves; tcmoves; opened}) =
     [hmoves; cmoves; won; lost; thmoves; tcmoves; opened] in
-  let rec concatmap lst res =
+  let rec cncmap lst res =
     match lst with
     | [] -> res
     | [x] -> res ^ (encode_num x)
     | x :: xs ->
-      let base = Char.code @@ case_base () in
+      let base = Char.code @@ str_case () in
       let sep = String.make 1 @@ Char.chr @@ 2 * (Random.int 16) + base - 3 in
-      concatmap xs @@ res ^ (encode_num x) ^ sep in
-  concatmap (list_of_stat stat_rcd) ""
+      cncmap xs @@ res ^ (encode_num x) ^ sep in
+  cncmap (stat_to_list stat_rcd) ""
 
 let decode str =
   let rec split str' i act res =
@@ -44,16 +44,18 @@ let decode str =
     then (List.rev act) :: res
     else
       let cd = (Char.code str'.[i]) mod 32 in
-      if cd mod 2 = 1 && cd < 20
-      then split str' (i + 1) ((cd / 2) :: act) res
-      else match act with
-        | [] -> split str' (i + 1) [] res
-        | _ -> split str' (i + 1) [] @@ (List.rev act) :: res
-  in
+      let cd' = if cd mod 2 = 1 && cd < 20 then Some (cd / 2) else None in
+      match cd' with
+      | Some x -> split str' (i + 1) (x :: act) res
+      | None ->
+        ( match act with
+          | [] -> split str' (i + 1) [] res
+          | _ -> split str' (i + 1) [] @@ (List.rev act) :: res
+        ) in
   let rec make_int res lst =
     match lst with
-    | x :: xs -> make_int (res * 10 + x) xs
-    | [] -> res in
+    | [] -> res
+    | x :: xs -> make_int (res * 10 + x) xs in
   let stat_from_list lst =
     match lst with
     | [hmoves_num; cmoves_num; won_num; lost_num; thmoves_num; tcmoves_num; opened_num] ->
