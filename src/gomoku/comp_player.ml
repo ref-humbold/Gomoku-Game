@@ -1,5 +1,4 @@
 type direction = Row of int | Column of int | Sum of int | Diff of int
-(* type direction = Row of int | Column of int | Sum of int * int | Diff of int * int *)
 
 type move =
   | Comp_make_five of int * int
@@ -10,7 +9,7 @@ type move =
   | Human_make_four of int * int
   | Any
 
-type hole = Five of (int * int) | Four of (int * int)
+type hole = Five of int * int | Four of int * int
 
 let compare_moves m1 m2 =
   match m1, m2 with
@@ -53,7 +52,7 @@ let get_sum_diag size sum gameboard =
   (extract_sum_diag sum size gameboard, Sum sum, max 0 (sum - size - 1))
 
 let get_diff_diag size diff gameboard =
-  (extract_diff_diag diff size gameboard, Diff diff, max 0 diff)
+  (extract_diff_diag diff size gameboard, Diff diff, max diff 0)
 
 let random_element lst = List.nth lst @@ Random.int @@ List.length lst
 
@@ -116,108 +115,62 @@ let get_empties size gameboard =
     else [] in
   List.concat @@ List.mapi row_empty gameboard
 
-let analyze_situation size player (row, col) gameboard =
+let check_win_situation size player (row, col) gameboard =
   let pos_by dir num =
     match dir with
     | Row r -> (r, num)
     | Column c -> (num, c)
     | Sum s -> (num, s - num)
     | Diff d -> (num, num - d) in
-  let rec check (lst, dir, numrow) acc =
+  let rec check acc (lst, dir, numrow) =
     match lst with
-    (* | Empty :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: ps when
-        player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-       let pos = pos_by dir numrow in
-       check (ps, dir, numrow + 5) @@ (Five pos):: acc
-       | Stone p1 :: Empty :: Stone p2 :: Stone p3 :: Stone p4 :: ps when
-        player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-       let pos = pos_by dir @@ numrow + 1 in
-       check (ps, dir, numrow + 5) @@ (Five pos):: acc
-       | Stone p1 :: Stone p2 :: Empty :: Stone p3 :: Stone p4 :: ps when
-        player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-       let pos = pos_by dir @@ numrow + 2 in
-       check (ps, dir, numrow + 5) @@ (Five pos):: acc
-       | Stone p1 :: Stone p2 :: Stone p3 :: Empty :: Stone p4 :: ps when
-        player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-       let pos = pos_by dir @@ numrow + 3 in
-       check (ps, dir, numrow + 5) @@ (Five pos):: acc
-       | Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Empty :: ps when
-        player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-       let pos = pos_by dir @@ numrow + 4 in
-       check (ps, dir, numrow + 5) @@ (Five pos):: acc
-       | Empty :: Stone p1 :: Stone p2 :: Stone p3 :: ps when
-        player = p1 && p1 = p2 && p2 = p3 ->
-        let pos = pos_by dir numrow in
-       check (ps, dir, numrow + 4) @@ (Four pos) :: acc
-       | Stone p1 :: Empty :: Stone p2 :: Stone p3 :: ps when
-        player = p1 && p1 = p2 && p2 = p3 ->
-        let pos = pos_by dir @@ numrow + 1 in
-       check (ps, dir, numrow + 4) @@ (Four pos) ::
-       | Stone p1 :: Stone p2 :: Empty :: Stone p3 :: ps when
-        player = p1 && p1 = p2 && p2 = p3 ->
-        let pos = pos_by dir @@ numrow + 2 in
-       check (ps, dir, numrow + 4) @@ (Four pos) :: acc
-       | Stone p1 :: Stone p2 :: Stone p3 :: Empty :: ps when
-        player = p1 && p1 = p2 && p2 = p3 ->
-        let pos = pos_by dir @@ numrow + 3 in
-       check (ps, dir, numrow + 4) @@ (Four pos) :: acc *)
-    | None :: Some p1 :: Some p2 :: Some p3 :: Some p4 :: ps when
-        Some player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-      check (ps, dir, numrow + 5) @@ (pos_by dir numrow, 5) :: acc
-    | Some p0 :: None :: Some p2 :: Some p3 :: Some p4 :: ps when
-        Some player = p0 && p0 = p2 && p2 = p3 && p3 = p4 ->
-      check (ps, dir, numrow + 5) @@ (pos_by dir (numrow + 1), 5) :: acc
-    | Some p0 :: Some p1 :: None :: Some p3 :: Some p4 :: ps when
-        Some player = p0 && p0 = p1 && p1 = p3 && p3 = p4 ->
-      check (ps, dir, numrow + 5) @@ (pos_by dir (numrow + 2), 5) :: acc
-    | Some p0 :: Some p1 :: Some p2 :: None :: Some p4 :: ps when
-        Some player = p0 && p0 = p1 && p1 = p2 && p2 = p4 ->
-      check (ps, dir, numrow + 5) @@ (pos_by dir (numrow + 3), 5) :: acc
-    | Some p0 :: Some p1 :: Some p2 :: Some p3 :: None :: ps when
-        Some player = p0 && p0 = p1 && p1 = p2 && p2 = p3 ->
-      check (ps, dir, numrow + 5) @@ (pos_by dir (numrow + 4), 5) :: acc
-    | None :: Some p1 :: Some p2 :: Some p3 :: ps when
-        Some player = p1 && p1 = p2 && p2 = p3 ->
-      check (ps, dir, numrow + 4) @@ (pos_by dir numrow, 4) :: acc
-    | Some p0 :: None :: Some p2 :: Some p3 :: ps when
-        Some player = p0 && p0 = p2 && p2 = p3 ->
-      check (ps, dir, numrow + 4) @@ (pos_by dir (numrow + 1), 4) :: acc
-    | Some p0 :: Some p1 :: None :: Some p3 :: ps when
-        Some player = p0 && p0 = p1 && p1 = p3 ->
-      check (ps, dir, numrow + 4) @@ (pos_by dir (numrow + 2), 4) :: acc
-    | Some p0 :: Some p1 :: Some p2 :: None :: ps when
-        Some player = p0 && p0 = p1 && p1 = p2 ->
-      check (ps, dir, numrow + 4) @@ (pos_by dir (numrow + 3), 4) :: acc
-    | _ :: ps -> check (ps, dir, numrow + 1) acc
+    | None :: Some t1 :: Some t2 :: Some t3 :: Some t4 :: ps when
+        Some player = t1 && t1 = t2 && t2 = t3 && t3 = t4 ->
+      check ((pos_by dir numrow, 5) :: acc) (ps, dir, numrow + 5)
+    | Some t0 :: None :: Some t2 :: Some t3 :: Some t4 :: ps when
+        Some player = t0 && t0 = t2 && t2 = t3 && t3 = t4 ->
+      check ((pos_by dir (numrow + 1), 5) :: acc) (ps, dir, numrow + 5)
+    | Some t0 :: Some t1 :: None :: Some t3 :: Some t4 :: ps when
+        Some player = t0 && t0 = t1 && t1 = t3 && t3 = t4 ->
+      check ((pos_by dir (numrow + 2), 5) :: acc) (ps, dir, numrow + 5)
+    | Some t0 :: Some t1 :: Some t2 :: None :: Some t4 :: ps when
+        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t4 ->
+      check ((pos_by dir (numrow + 3), 5) :: acc) (ps, dir, numrow + 5)
+    | Some t0 :: Some t1 :: Some t2 :: Some t3 :: None :: ps when
+        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t3 ->
+      check ((pos_by dir (numrow + 4), 5) :: acc) (ps, dir, numrow + 5)
+    | None :: Some t1 :: Some t2 :: Some t3 :: ps when
+        Some player = t1 && t1 = t2 && t2 = t3 ->
+      check ((pos_by dir numrow, 4) :: acc) (ps, dir, numrow + 4)
+    | Some t0 :: None :: Some t2 :: Some t3 :: ps when
+        Some player = t0 && t0 = t2 && t2 = t3 ->
+      check ((pos_by dir (numrow + 1), 4) :: acc) (ps, dir, numrow + 4)
+    | Some t0 :: Some t1 :: None :: Some t3 :: ps when
+        Some player = t0 && t0 = t1 && t1 = t3 ->
+      check ((pos_by dir ( + 2), 4) :: acc) (ps, dir, numrow + 4)
+    | Some t0 :: Some t1 :: Some t2 :: None :: ps when
+        Some player = t0 && t0 = t1 && t1 = t2 ->
+      check ((pos_by dir (numrow + 3), 4) :: acc) (ps, dir, numrow + 4)
+    | _ :: ps -> check acc (ps, dir, numrow + 1)
     | [] -> acc in
   let get_all r c g = [get_row r g;
                        get_column c g;
                        get_sum_diag size (r + c) g;
                        get_diff_diag size (r - c) g] in
-  List.concat @@ List.map (fun r -> check r []) @@ get_all row col gameboard
+  List.concat @@ List.map (check []) @@ get_all row col gameboard
 
 let check_board_situation size player gameboard =
   let rec check acc lst =
     match lst with
-    (* | Stone p0 :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: ps when
-        player = p0 && p0 = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-       check (5 :: acc) ps
-       | Stone p0 :: Stone p1 :: Stone p2 :: Stone p3 :: ps when
-        player = p0 && p0 = p1 && p1 = p2 && p2 = p3 ->
-       check (4 :: acc) ps
-       | Stone p0 :: Stone p1 :: Stone p2 :: ps when player = p0 && p0 = p1 && p1 = p2 ->
-       check (3 :: acc) ps
-       | Stone p0 :: Stone p1 :: ps when player = p0 && p0 = p1 ->
-       check (2 :: acc) ps *)
-    | Some p0 :: Some p1 :: Some p2 :: Some p3 :: Some p4 :: ps when
-        Some player = p0 && p0 = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
+    | Some t0 :: Some t1 :: Some t2 :: Some t3 :: Some t4 :: ps when
+        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t3 && t3 = t4 ->
       check (5 :: acc) ps
-    | Some p0 :: Some p1 :: Some p2 :: Some p3 :: ps when
-        Some player = p0 && p0 = p1 && p1 = p2 && p2 = p3 ->
+    | Some t0 :: Some t1 :: Some t2 :: Some t3 :: ps when
+        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t3 ->
       check (4 :: acc) ps
-    | Some p0 :: Some p1 :: Some p2 :: ps when Some player = p0 && p0 = p1 && p1 = p2 ->
+    | Some t0 :: Some t1 :: Some t2 :: ps when Some player = t0 && t0 = t1 && t1 = t2 ->
       check (3 :: acc) ps
-    | Some p0 :: Some p1 :: ps when Some player = p0 && p0 = p1 ->
+    | Some t0 :: Some t1 :: ps when Some player = t0 && t0 = t1 ->
       check (2 :: acc) ps
     | _ :: ps -> check acc ps
     | [] -> acc in
@@ -322,7 +275,7 @@ let heuristic_move size gameboard =
 
 let analyze size human_move gameboard =
   let analyze' player mv =
-    let sit = analyze_situation size player mv gameboard in
+    let sit = check_win_situation size player mv gameboard in
     [numbered player sit; make_five player sit; make_four player sit] in
   List.sort compare_moves @@ (analyze' Board.Human human_move) @ (analyze' Board.Comp (!last_move))
 
