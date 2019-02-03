@@ -1,7 +1,7 @@
-type stat_info = St of {hmoves: int; cmoves: int; won: int; lost: int;
-                        thmoves: int; tcmoves: int; opened: int}
-
-type moves_count = Moves of {human_mv: int; comp_mv: int}
+type stat_info = St of {hmoves: int; cmoves: int;
+                        won: int; lost: int;
+                        thmoves: int; tcmoves: int;
+                        opened: int}
 
 exception Stat_format_error of string
 
@@ -61,7 +61,8 @@ let decode str =
     | x :: xs -> make_int (res * 10 + x) xs in
   let stat_from_list lst =
     match lst with
-    | [hmoves_num; cmoves_num; won_num; lost_num; thmoves_num; tcmoves_num; opened_num] ->
+    | [hmoves_num; cmoves_num; won_num; lost_num;
+       thmoves_num; tcmoves_num; opened_num] ->
       St {hmoves=(make_int 0 hmoves_num); cmoves=(make_int 0 cmoves_num);
           won=(make_int 0 won_num); lost=(make_int 0 lost_num);
           thmoves=(make_int 0 thmoves_num); tcmoves=(make_int 0 tcmoves_num);
@@ -78,7 +79,10 @@ let write stat_rcd =
     close_out file
   end
 
-let clear () = write @@ St {hmoves=0; cmoves=0; won=0; lost=0; thmoves=0; tcmoves=0; opened=0}
+let clear () = write @@ St {hmoves=0; cmoves=0;
+                            won=0; lost=0;
+                            thmoves=0; tcmoves=0;
+                            opened=0}
 
 let read () =
   let file =
@@ -94,14 +98,24 @@ let read () =
     decode text
   end
 
-let update_data winner (Moves {human_mv; comp_mv}) =
-  let St {won; lost; thmoves; tcmoves; opened; _} = read () in
-  match winner with
-  | Board.Human ->
-    write @@ St {hmoves=human_mv; cmoves=comp_mv; won=(won + 1); lost;
-                 thmoves=(thmoves + human_mv); tcmoves=(tcmoves + comp_mv); opened}
-  | Board.Comp ->
-    write @@ St {hmoves=human_mv; cmoves=comp_mv; won; lost=(lost + 1);
-                 thmoves=(thmoves + human_mv); tcmoves=(tcmoves + comp_mv); opened}
+let update_data winner human_moves comp_moves =
+  match read () with
+  | St {won; lost; thmoves; tcmoves; opened; _} ->
+    ( match winner with
+      | Board.Human ->
+        write @@ St {hmoves=human_moves; cmoves=comp_moves;
+                     won=(won + 1); lost;
+                     thmoves=(thmoves + human_moves);
+                     tcmoves=(tcmoves + comp_moves);
+                     opened}
+      | Board.Comp ->
+        write @@ St {hmoves=human_moves; cmoves=comp_moves;
+                     won; lost=(lost + 1);
+                     thmoves=(thmoves + human_moves);
+                     tcmoves=(tcmoves + comp_moves);
+                     opened}
+    )
 
-let prepare_data () = let St rcd = read () in write @@ St {rcd with opened=(rcd.opened + 1)}
+let prepare_data () =
+  match read () with
+  | St rcd -> write @@ St {rcd with opened=(rcd.opened + 1)}

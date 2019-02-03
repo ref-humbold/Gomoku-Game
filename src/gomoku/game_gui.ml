@@ -10,13 +10,13 @@ let texts = (Gui.Txt {xc=Gui.ratio 1 2; yc=Gui.ratio 92 100;
 let step = 24
 
 let get_borders size =
-  let cols = size / 2 + 1 in
-  let half = Gui.ratio 1 2 in
+  let cols = size / 2 + 1
+  and half = Gui.ratio 1 2 in
   (half + step * cols, half - step * cols)
 
 let get_lines size =
-  let cols = size / 2 in
-  let half = Gui.ratio 1 2 in
+  let cols = size / 2
+  and half = Gui.ratio 1 2 in
   let rec get_lines' i acc =
     if i + cols >= 0
     then get_lines' (i - 1) @@ (half + step * i) :: acc
@@ -29,8 +29,8 @@ let norm size (x, y) =
   (norm' x, norm' y)
 
 let display size =
-  let pos = get_lines size in
-  let pbeg, pend = get_borders size in
+  let pos = get_lines size
+  and pbeg, pend = get_borders size in
   let draw_line width pos =
     begin
       Graphics.set_line_width width;
@@ -53,8 +53,8 @@ let draw_stone size player (row, col) =
     match player with
     | Board.Human -> Graphics.white
     | Board.Comp -> Graphics.black in
-  let px = endline + col * step in
-  let py = endline + row * step in
+  let px = endline + col * step
+  and py = endline + row * step in
   begin
     Graphics.set_color stone_colour;
     Graphics.fill_circle px py (7 * step / 16)
