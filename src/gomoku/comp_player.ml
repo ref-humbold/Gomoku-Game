@@ -49,10 +49,12 @@ let get_column col gameboard =
   (List.map (fun lst -> List.nth lst col) gameboard, Column col, 0)
 
 let get_sum_diag size sum gameboard =
-  (extract_sum_diag sum size gameboard, Sum sum, max 0 (sum - size - 1))
+  let beg_row = if sum <= size + 1 then 0 else sum - size - 1 in
+  (extract_sum_diag sum size gameboard, Sum sum, beg_row)
 
 let get_diff_diag size diff gameboard =
-  (extract_diff_diag diff size gameboard, Diff diff, max diff 0)
+  let beg_row = if diff <= 0 then 0 else diff in
+  (extract_diff_diag diff size gameboard, Diff diff, beg_row)
 
 let random_element lst = List.nth lst @@ Random.int @@ List.length lst
 
@@ -73,7 +75,9 @@ let count_nums lst =
   let rec cnt num lst' =
     match lst' with
     | x1 :: (x2 :: _ as xt) ->
-      if x1 = x2 then cnt (num + 1) xt else (x1, num) :: (cnt 1 xt)
+      if x1 = x2
+      then cnt (num + 1) xt
+      else (x1, num) :: (cnt 1 xt)
     | [x] -> [(x, num)]
     | [] -> [] in
   List.sort compare @@ cnt 1 @@ List.sort compare lst
@@ -83,14 +87,17 @@ let get_empties size gameboard =
     let prv = List.nth gameboard (row - 1) in
     let nxt = List.nth gameboard (row + 1) in
     let same = List.nth gameboard row in
-    [List.nth prv (col - 1); List.nth prv col; List.nth prv (col + 1);
-     List.nth same (col - 1); List.nth same (col + 1);
-     List.nth nxt (col - 1); List.nth nxt col; List.nth nxt (col + 1)] in
+    [List.nth prv (col - 1);
+     List.nth prv col;
+     List.nth prv (col + 1);
+     List.nth same (col - 1);
+     List.nth same (col + 1);
+     List.nth nxt (col - 1);
+     List.nth nxt col;
+     List.nth nxt (col + 1)] in
   let check field =
     match field with
-    (* | Stone _ -> true *)
     | Some (Some _) -> true
-    (* | Border | Free -> false in *)
     | Some None | None -> false in
   let empty i row_i field =
     if i >= 1 && i <= size
@@ -109,9 +116,9 @@ let get_empties size gameboard =
         then (row_i, res) :: (mapi_row (i + 1) xs)
         else mapi_row (i + 1) xs in
     mapi_row 0 row in
-  let row_empty i row =
-    if i >= 1 && i <= size
-    then map_row empty i row
+  let row_empty row_i row =
+    if row_i >= 1 && row_i <= size
+    then map_row empty row_i row
     else [] in
   List.concat @@ List.mapi row_empty gameboard
 
@@ -163,15 +170,13 @@ let check_board_situation size player gameboard =
   let rec check acc lst =
     match lst with
     | Some t0 :: Some t1 :: Some t2 :: Some t3 :: Some t4 :: ps when
-        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t3 && t3 = t4 ->
-      check (5 :: acc) ps
+        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t3 && t3 = t4 -> check (5 :: acc) ps
     | Some t0 :: Some t1 :: Some t2 :: Some t3 :: ps when
-        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t3 ->
-      check (4 :: acc) ps
-    | Some t0 :: Some t1 :: Some t2 :: ps when Some player = t0 && t0 = t1 && t1 = t2 ->
-      check (3 :: acc) ps
-    | Some t0 :: Some t1 :: ps when Some player = t0 && t0 = t1 ->
-      check (2 :: acc) ps
+        Some player = t0 && t0 = t1 && t1 = t2 && t2 = t3 -> check (4 :: acc) ps
+    | Some t0 :: Some t1 :: Some t2 :: ps when
+        Some player = t0 && t0 = t1 && t1 = t2 -> check (3 :: acc) ps
+    | Some t0 :: Some t1 :: ps when
+        Some player = t0 && t0 = t1 -> check (2 :: acc) ps
     | _ :: ps -> check acc ps
     | [] -> acc in
   let get_rows g = g in
@@ -188,7 +193,10 @@ let check_board_situation size player gameboard =
       then get_d (d + 1) @@ (extract_diff_diag d size g) :: acc
       else acc in
     get_d (-size + 1) [] in
-  let get_all g = List.concat [get_rows g; get_columns g; get_sum_diags g; get_diff_diags g] in
+  let get_all g = List.concat [get_rows g;
+                               get_columns g;
+                               get_sum_diags g;
+                               get_diff_diags g] in
   count_nums @@ List.concat @@ List.map (check []) @@ get_all gameboard
 
 let numbered player situation =
@@ -236,12 +244,9 @@ let heura size gameboard =
 
 let heuristic_move size gameboard =
   let cmp f (pm, xm) (pa, xa) =
-    if f xm xa
-    then (pm, xm)
-    else if xm <> xa
-    then (pa, xa)
-    else if Random.bool ()
-    then (pm, xm)
+    if f xm xa then (pm, xm)
+    else if xm = xa
+    then if Random.bool () then (pm, xm) else (pa, xa)
     else (pa, xa) in
   let rec forward_move level a b player gameboard' =
     if level = 0
@@ -259,15 +264,11 @@ let heuristic_move size gameboard =
           | Board.Comp ->
             let new_acc = cmp (>) nacc acc in
             let new_a = max (snd new_acc) a' in
-            if new_a >= b'
-            then new_acc
-            else find_res new_a b' ps new_acc
+            if new_a >= b' then new_acc else find_res new_a b' ps new_acc
           | Board.Human ->
             let new_acc = cmp (<) nacc acc in
             let new_b = min (snd new_acc) b' in
-            if a' >= new_b
-            then new_acc
-            else find_res a' new_b ps new_acc in
+            if a' >= new_b then new_acc else find_res a' new_b ps new_acc in
       match player with
       | Board.Comp -> find_res a b empty_pos ((0, 0), neg_infinity)
       | Board.Human -> find_res a b empty_pos ((0, 0), infinity) in

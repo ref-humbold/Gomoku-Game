@@ -55,9 +55,7 @@ let check_winner gameboard size player (row, col) =
                                       get_column col' gameboard';
                                       get_sum_diag (row' + col') gameboard';
                                       get_diff_diag (row' - col') gameboard'] in
-  if List.exists check @@ get_all row col gameboard
-  then Some player
-  else None
+  if List.exists check @@ get_all row col gameboard then Some player else None
 
 let start_game size =
   begin
