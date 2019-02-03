@@ -11,10 +11,12 @@ let str_case () = if Random.bool () then 'A' else 'a'
 
 let encode_num num =
   let enc num' res =
-    if num' = 0 then String.make 1 @@ str_case ()
+    if num' = 0
+    then String.make 1 @@ str_case ()
     else
       let rec enc' num'' res' =
-        if num'' = 0 then res'
+        if num'' = 0
+        then res'
         else
           let n = num'' mod 10 in
           let base = Char.code @@ str_case () in
@@ -38,17 +40,21 @@ let encode stat_rcd =
 
 let decode str =
   let rec split str' i act res =
-    if i = String.length str' then (List.rev act) :: res
+    if i = String.length str'
+    then (List.rev act) :: res
     else
       let cd = (Char.code str'.[i]) mod 32 in
-      let cd' = if cd mod 2 = 1 && cd < 20 then Some (cd / 2) else None in
+      let cd' =
+        if cd mod 2 = 1 && cd < 20
+        then Some (cd / 2)
+        else None in
       match cd' with
-      | Some x -> split str' (i + 1) (x :: act) res
       | None ->
         ( match act with
           | [] -> split str' (i + 1) [] res
           | _ -> split str' (i + 1) [] @@ (List.rev act) :: res
-        ) in
+        )
+      | Some x -> split str' (i + 1) (x :: act) res in
   let rec make_int res lst =
     match lst with
     | [] -> res
@@ -76,8 +82,8 @@ let clear () = write @@ St {hmoves=0; cmoves=0; won=0; lost=0; thmoves=0; tcmove
 
 let read () =
   let file =
-    try open_in filename
-    with Sys_error _ ->
+    try open_in filename with
+    | Sys_error _ ->
       begin
         clear ();
         open_in filename
