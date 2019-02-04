@@ -1,9 +1,7 @@
-type button_t = Btn of {xc: int; yc: int;
-                        width: int; height: int;
-                        label: string; colour: Graphics.color}
-
-type text_t = Txt of {xc: int; yc: int;
+type button = Btn of {xc: int; yc: int; width: int; height: int;
                       label: string; colour: Graphics.color}
+
+type text = Txt of {xc: int; yc: int; label: string; colour: Graphics.color}
 
 let window_size = 800
 
@@ -14,8 +12,8 @@ let ratio n d =
     if a = 0 then b
     else if a > b then gcd b a
     else gcd (b mod a) a in
-  let n' = n / (gcd n d)
-  and d' = d / (gcd n d) in
+  let n' = n / (gcd n d) in
+  let d' = d / (gcd n d) in
   n' * window_size / d'
 
 let center_text (Txt {xc; yc; label; _}) =

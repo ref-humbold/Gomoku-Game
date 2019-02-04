@@ -1,9 +1,7 @@
 let check_winner gameboard size player (row, col) =
-  let get_row row' gameboard' =
-    List.nth gameboard' row'
-  and get_column col' gameboard' =
-    List.map (fun lst -> List.nth lst col') gameboard'
-  and get_sum_diag sum gameboard' =
+  let get_row row' gameboard' = List.nth gameboard' row' in
+  let get_column col' gameboard' = List.map (fun lst -> List.nth lst col') gameboard' in
+  let get_sum_diag sum gameboard' =
     let rec gs i gameboard'' acc =
       match gameboard'' with
       | [] -> List.rev acc
@@ -11,8 +9,8 @@ let check_winner gameboard size player (row, col) =
         if sum - i < 0 || sum - i > size + 1
         then gs (i + 1) rows' acc
         else gs (i + 1) rows' @@ (List.nth row' @@ sum - i) :: acc in
-    gs 0 gameboard' []
-  and get_diff_diag diff gameboard' =
+    gs 0 gameboard' [] in
+  let get_diff_diag diff gameboard' =
     let rec gd i gameboard'' acc =
       match gameboard'' with
       | [] -> List.rev acc
@@ -47,7 +45,7 @@ let start_game size =
     Random.self_init ();
     Comp_player.clear ();
     Game_gui.display size;
-    Board.create @@ size + 2
+    Board.create_board @@ size + 2
   end
 
 let end_game (winner, mvh, mvc) =

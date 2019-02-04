@@ -1,23 +1,23 @@
-type player_t = Human | Comp
+type player = Human | Comp
 
-type gameboard_t = player_t option option list list
+type gameboard = player option option list list
 
 exception Incorrect_gameboard of string
 
 exception Incorrect_player of string
 
-let create size =
+let create_board size =
   let rec create_row rownum i acc =
     if i = 0
     then acc
     else if rownum = 1 || rownum = size || i = 1 || i = size
     then create_row rownum (i - 1) @@ (Some None) :: acc
     else create_row rownum (i - 1) @@ None :: acc in
-  let rec create_board rownum acc =
+  let rec create rownum acc =
     if rownum = 0
     then acc
-    else create_board (rownum - 1) @@ (create_row rownum size []) :: acc in
-  create_board size []
+    else create (rownum - 1) @@ (create_row rownum size []) :: acc in
+  create size []
 
 let set_move (row, col) player game =
   let rec set_col n row' =
