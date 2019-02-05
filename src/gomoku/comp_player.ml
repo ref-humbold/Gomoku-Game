@@ -13,6 +13,10 @@ type move =
 
 type hole = Five of (int * int) | Four of (int * int)
 
+let move_queue = ref [Any]
+
+let last_move = ref (0, 0)
+
 let compare_moves m1 m2 =
   match m1, m2 with
   | Any, Any -> 0
@@ -20,42 +24,18 @@ let compare_moves m1 m2 =
   | _, Any -> -1
   | _, _ -> compare m1 m2
 
-let extract_sum_diag sum fields size =
-  let rec extract_sum i fds acc =
-    match fds with
-    | [] -> List.rev acc
-    | rw :: rws ->
-      if sum - i < 0 || sum - i > size + 1
-      then extract_sum (i + 1) rws acc
-      else extract_sum (i + 1) rws @@ (List.nth rw (sum - i)) :: acc in
-  extract_sum 0 fields []
+let get_row_dim n gameboard =
+  (get_row n gameboard, Row n)
 
-let extract_diff_diag diff game size =
-  let rec extract_diff i fds acc =
-    match fds with
-    | [] -> List.rev acc
-    | rw :: rws ->
-      if i - diff < 0 || i - diff > size + 1
-      then extract_diff (i + 1) rws acc
-      else extract_diff (i + 1) rws @@ (List.nth rw (i - diff)) :: acc in
-  extract_diff 0 game []
+let get_column_dim m gameboard =
+  (get_column m gameboard, Column m)
 
-let move_queue = ref [Any]
-
-let last_move = ref (0, 0)
-
-let get_row n (Gameboard {fields; _}) =
-  (List.nth fields n, Row n)
-
-let get_column m (Gameboard {fields; _}) =
-  (List.map (fun lst -> List.nth lst m) fields, Column m)
-
-let get_sum_diag sum (Gameboard {fields; size}) =
-  (extract_sum_diag sum fields size,
+let get_sum_diag_dim sum (Gameboard {size; _} as gameboard) =
+  (get_sum_diag sum gameboard,
    Sum (sum, max 0 (sum - size - 1)))
 
-let get_diff_diag diff (Gameboard {fields; size}) =
-  (extract_diff_diag diff fields size, Diff (diff, max 0 diff))
+let get_diff_diag_dim diff gameboard =
+  (get_diff_diag diff gameboard, Diff (diff, max 0 diff))
 
 let random_element lst = List.nth lst @@ Random.int @@ List.length lst
 
@@ -161,19 +141,19 @@ let analyze_situation player (row, col) gameboard =
         player = p1 && p1 = p2 && p2 = p3 ->
       let pos = pos_by dir @@ numrow + 3 in
       check_at (ps, dir, numrow + 4) @@ (Four pos) :: acc
-    | _ :: ps -> check_at (ps, dir, numrow + 1) acc
+    | Free :: ps | Border ::ps | Stone _ :: ps -> check_at (ps, dir, numrow + 1) acc
     | [] -> acc in
   let check (lst, dir) =
     match dir with
     | Row _ | Column _ -> check_at (lst, dir, 0) []
     | Sum (_, p) | Diff (_, p) -> check_at (lst, dir, p) [] in
-  let get_all r c g = [get_row r g;
-                       get_column c g;
-                       get_sum_diag (r + c) g;
-                       get_diff_diag (r - c) g] in
+  let get_all r c g = [get_row_dim r g;
+                       get_column_dim c g;
+                       get_sum_diag_dim (r + c) g;
+                       get_diff_diag_dim (r - c) g] in
   List.concat @@ List.map check @@ get_all row col gameboard
 
-let check_board_situation player (Gameboard {fields; size}) =
+let check_board_situation player gameboard =
   let rec check acc lst =
     match lst with
     | Stone p0 :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: ps when
@@ -186,25 +166,25 @@ let check_board_situation player (Gameboard {fields; size}) =
       check (3 :: acc) ps
     | Stone p0 :: Stone p1 :: ps when player = p0 && p0 = p1 ->
       check (2 :: acc) ps
-    | _ :: ps -> check acc ps
+    | Free :: ps | Border ::ps | Stone _ :: ps -> check acc ps
     | [] -> acc in
-  let get_rows fields = fields in
-  let get_columns fields = List.mapi (fun i _ -> List.nth fields i) fields in
-  let get_sum_diags fields =
+  let get_rows (Gameboard {fields; _}) = fields in
+  let get_columns (Gameboard {fields; _}) = List.mapi (fun i _ -> List.nth fields i) fields in
+  let get_sum_diags (Gameboard {size; _} as gameboard') =
     let rec get_s sum acc =
       if sum <= size + size
-      then get_s (sum + 1) @@ (extract_sum_diag sum fields size) :: acc
+      then get_s (sum + 1) @@ (get_sum_diag sum gameboard') :: acc
       else acc in
     get_s 2 [] in
-  let get_diff_diags fields =
+  let get_diff_diags (Gameboard {size; _} as gameboard') =
     let rec get_d diff acc =
       if diff <= size - 1
-      then get_d (diff + 1) @@ (extract_diff_diag diff fields size) :: acc
+      then get_d (diff + 1) @@ (get_diff_diag diff gameboard') :: acc
       else acc in
     get_d (-size + 1) [] in
-  let get_all fields = List.concat [get_rows fields; get_columns fields;
-                                    get_sum_diags fields; get_diff_diags fields] in
-  count_nums @@ List.concat @@ List.map (check []) @@ get_all fields
+  let get_all gameboard' = List.concat [get_rows gameboard'; get_columns gameboard';
+                                        get_sum_diags gameboard'; get_diff_diags gameboard'] in
+  count_nums @@ List.concat @@ List.map (check []) @@ get_all gameboard
 
 let numbered player situation =
   let sit_points = List.map (fun x -> match x with Five p | Four p -> p) situation in

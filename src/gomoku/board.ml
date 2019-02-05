@@ -43,5 +43,28 @@ let opponent player =
   | Human -> Comp
   | Comp -> Human
 
-let is_free (row, col) (Gameboard {fields; _}) =
-  List.nth (List.nth fields row) col = Free
+let is_free (row, col) (Gameboard {fields; _}) = List.nth (List.nth fields row) col = Free
+
+let get_row n (Gameboard {fields; _}) = List.nth fields n
+
+let get_column m (Gameboard {fields; _}) = List.map (fun lst -> List.nth lst m) fields
+
+let get_sum_diag sum (Gameboard {fields; size}) =
+  let rec extract i fields' acc =
+    match fields' with
+    | [] -> List.rev acc
+    | row :: rows ->
+      if sum - i < 0 || sum - i > size + 1
+      then extract (i + 1) rows acc
+      else extract (i + 1) rows @@ (List.nth row @@ sum - i) :: acc in
+  extract 0 fields []
+
+let get_diff_diag diff (Gameboard {fields; size}) =
+  let rec extract i fields' acc =
+    match fields' with
+    | [] -> List.rev acc
+    | row :: rows ->
+      if i - diff < 0 || i - diff > size + 1
+      then extract (i + 1) rows acc
+      else extract (i + 1) rows @@ (List.nth row @@ i - diff) :: acc in
+  extract 0 fields []
