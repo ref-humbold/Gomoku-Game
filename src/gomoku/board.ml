@@ -9,34 +9,34 @@ exception Incorrect_gameboard of string
 exception Incorrect_player of string
 
 let create_board size =
-  let rec create_row row col acc =
-    if col = 0
+  let rec create_row n m acc =
+    if m = 0
     then acc
-    else if row = 1 || row = size || col = 1 || col = size
-    then create_row row (col - 1) @@ Border :: acc
-    else create_row row (col - 1) @@ Free :: acc in
-  let rec create row acc =
-    if row = 0
+    else if n = 1 || n = size || m = 1 || m = size
+    then create_row n (m - 1) @@ Border :: acc
+    else create_row n (m - 1) @@ Free :: acc in
+  let rec create n acc =
+    if n = 0
     then acc
-    else create (row - 1) @@ (create_row row size []) :: acc in
+    else create (n - 1) @@ (create_row n size []) :: acc in
   Gameboard {fields=create size []; size=size}
 
-let set_move (row, col) player (Gameboard g)=
+let set_move (x, y) player (Gameboard g)=
   let rec set_col n row' =
     match row' with
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ column"
-    | x :: xs ->
+    | col :: cols ->
       if n = 0
-      then (Stone player) :: xs
-      else x :: (set_col (n - 1) xs) in
+      then (Stone player) :: cols
+      else col :: (set_col (n - 1) cols) in
   let rec set_row n fields' =
     match fields' with
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
-    | x :: xs ->
+    | row :: rows ->
       if n = 0
-      then (set_col col x) :: xs
-      else x :: (set_row (n - 1) xs) in
-  Gameboard {g with fields=set_row row g.fields}
+      then (set_col y row) :: rows
+      else row :: (set_row (n - 1) rows) in
+  Gameboard {g with fields=set_row x g.fields}
 
 let opponent player =
   match player with
