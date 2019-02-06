@@ -165,7 +165,8 @@ let check_board_situation player gameboard =
     | Free :: ps | Border ::ps | Stone _ :: ps -> check acc ps
     | [] -> acc in
   let get_rows (Gameboard {fields; _}) = fields in
-  let get_columns (Gameboard {fields; _}) = List.mapi (fun i _ -> List.nth fields i) fields in
+  let get_columns (Gameboard {fields; _} as gameboard') =
+    List.mapi (fun i _ -> get_column i gameboard') fields in
   let get_sum_diags (Gameboard {size; _} as gameboard') =
     let rec get_s sum acc =
       if sum <= size + size

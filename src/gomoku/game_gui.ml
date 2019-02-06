@@ -67,7 +67,7 @@ let rec choose_stone size =
   else choose_stone size
 
 let return winner =
-  let print_winner () =
+  let show_winner () =
     match winner with
     | Board.Human -> Gui.draw_text @@ fst texts
     | Board.Comp -> Gui.draw_text @@ snd texts in
@@ -77,7 +77,7 @@ let return winner =
     then ()
     else check_click () in
   begin
-    print_winner ();
+    show_winner ();
     Gui.draw_button button;
     check_click ()
   end
