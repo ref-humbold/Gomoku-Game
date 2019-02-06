@@ -47,14 +47,14 @@ let display size =
     List.iter (draw_line 0) pos
   end
 
-let draw_stone size player (row, col) =
+let draw_stone size player (x, y) =
   let _, endline = get_borders size in
   let stone_colour =
     match player with
     | Board.Human -> Graphics.white
     | Board.Comp -> Graphics.black in
-  let px = endline + col * step in
-  let py = endline + row * step in
+  let px = endline + y * step in
+  let py = endline + x * step in
   begin
     Graphics.set_color stone_colour;
     Graphics.fill_circle px py (7 * step / 16)

@@ -21,29 +21,7 @@ let create_board size =
     else create (n - 1) @@ (create_row n size []) :: acc in
   Gameboard {fields=create size []; size=size}
 
-let set_move (x, y) player (Gameboard g)=
-  let rec set_col n row' =
-    match row' with
-    | [] -> raise @@ Incorrect_gameboard "Board.set_move @ column"
-    | col :: cols ->
-      if n = 0
-      then (Stone player) :: cols
-      else col :: (set_col (n - 1) cols) in
-  let rec set_row n fields' =
-    match fields' with
-    | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
-    | row :: rows ->
-      if n = 0
-      then (set_col y row) :: rows
-      else row :: (set_row (n - 1) rows) in
-  Gameboard {g with fields=set_row x g.fields}
-
-let opponent player =
-  match player with
-  | Human -> Comp
-  | Comp -> Human
-
-let is_free (row, col) (Gameboard {fields; _}) = List.nth (List.nth fields row) col = Free
+let get_field (x, y) (Gameboard {fields; size}) = List.nth (List.nth fields x) y
 
 let get_row n (Gameboard {fields; _}) = List.nth fields n
 
@@ -68,3 +46,25 @@ let get_diff_diag diff (Gameboard {fields; size}) =
       then extract (i + 1) rows acc
       else extract (i + 1) rows @@ (List.nth row @@ i - diff) :: acc in
   extract 0 fields []
+
+let set_move (x, y) player (Gameboard g)=
+  let rec set_col n row' =
+    match row' with
+    | [] -> raise @@ Incorrect_gameboard "Board.set_move @ column"
+    | col :: cols ->
+      if n = 0
+      then (Stone player) :: cols
+      else col :: (set_col (n - 1) cols) in
+  let rec set_row n fields' =
+    match fields' with
+    | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
+    | row :: rows ->
+      if n = 0
+      then (set_col y row) :: rows
+      else row :: (set_row (n - 1) rows) in
+  Gameboard {g with fields=set_row x g.fields}
+
+let opponent player =
+  match player with
+  | Human -> Comp
+  | Comp -> Human

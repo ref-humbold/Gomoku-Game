@@ -3,12 +3,12 @@ open Board
 type direction = Row of int | Column of int | Sum of int * int | Diff of int * int
 
 type move =
-  | Comp_make_five of int * int
-  | Human_make_more of int * int
-  | Human_make_five of int * int
-  | Comp_make_more of int * int
-  | Comp_make_four of int * int
-  | Human_make_four of int * int
+  | Comp_five of int * int
+  | Human_multiple of int * int
+  | Human_five of int * int
+  | Comp_multiple of int * int
+  | Comp_four of int * int
+  | Human_four of int * int
   | Any
 
 type hole = Five of (int * int) | Four of (int * int)
@@ -61,40 +61,36 @@ let count_nums lst =
     | [] -> [] in
   List.sort compare @@ cnt 1 @@ List.sort compare lst
 
-let get_empties (Gameboard {fields; size}) =
-  let neighbours row col =
-    let prv = List.nth fields (row - 1) in
-    let nxt = List.nth fields (row + 1) in
-    let same = List.nth fields row in
-    [List.nth prv (col - 1); List.nth prv col; List.nth prv (col + 1);
-     List.nth same (col - 1); List.nth same (col + 1);
-     List.nth nxt (col - 1); List.nth nxt col; List.nth nxt (col + 1)] in
-  let check field =
+let get_empties (Gameboard {fields; size} as gameboard) =
+  let neighbours x y =
+    [get_field (x - 1, y - 1) gameboard;
+     get_field (x - 1, y) gameboard;
+     get_field (x - 1, y + 1) gameboard;
+     get_field (x, y - 1) gameboard;
+     get_field (x, y + 1) gameboard;
+     get_field (x + 1, y - 1) gameboard;
+     get_field (x + 1, y) gameboard;
+     get_field (x + 1, y + 1) gameboard] in
+  let check_stone field =
     match field with
     | Stone _ -> true
     | Border | Free -> false in
-  let empty i row_i field =
-    if i >= 1 && i <= size
-    then
-      match field with
-      | Free -> if List.exists check @@ neighbours row_i i then i else -1
-      | Border | Stone _ -> -1
-    else -1 in
-  let map_row f row_i row =
-    let rec mapi_row i row' =
-      match row' with
-      | [] -> []
-      | x :: xs ->
-        let res = f i row_i x in
-        if res > 0
-        then (row_i, res) :: (mapi_row (i + 1) xs)
-        else mapi_row (i + 1) xs in
-    mapi_row 0 row in
-  let row_empty i row =
-    if i >= 1 && i <= size
-    then map_row empty i row
-    else [] in
-  List.concat @@ List.mapi row_empty fields
+  let rec mapi_row x y row =
+    match row with
+    | Free :: fds ->
+      if y >= 1 && y <= size && List.exists check_stone @@ neighbours x y
+      then (x, y) :: (mapi_row x (y + 1) fds)
+      else mapi_row x (y + 1) fds
+    | Border :: fds | Stone _ :: fds -> mapi_row x (y + 1) fds
+    | [] -> [] in
+  let rec mapi_fields x fields' =
+    match fields' with
+    | row :: rows ->
+      if x >= 1 && x <= size
+      then (mapi_row x 0 row) :: (mapi_fields (x + 1) rows)
+      else mapi_fields (x + 1) rows
+    | [] -> [] in
+  List.concat @@ mapi_fields 0 fields
 
 let analyze_situation player (row, col) gameboard =
   let pos_by dir num =
@@ -186,13 +182,13 @@ let check_board_situation player gameboard =
                                         get_sum_diags gameboard'; get_diff_diags gameboard'] in
   count_nums @@ List.concat @@ List.map (check []) @@ get_all gameboard
 
-let numbered player situation =
+let make_multiple player situation =
   let sit_points = List.map (fun x -> match x with Five p | Four p -> p) situation in
   match count_points sit_points with
   | (n, (p1, p2)) :: _ when n > 1 ->
     ( match player with
-      | Board.Human -> Human_make_more (p1, p2)
-      | Board.Comp -> Comp_make_more (p1, p2)
+      | Board.Human -> Human_multiple (p1, p2)
+      | Board.Comp -> Comp_multiple (p1, p2)
     )
   | _ -> Any
 
@@ -203,8 +199,8 @@ let make_five player situation =
   | _ :: _ ->
     let Five (p1, p2) = random_element make_five_list in
     ( match player with
-      | Board.Human -> Human_make_five (p1, p2)
-      | Board.Comp -> Comp_make_five (p1, p2)
+      | Board.Human -> Human_five (p1, p2)
+      | Board.Comp -> Comp_five (p1, p2)
     )
   | [] -> Any
 
@@ -215,8 +211,8 @@ let make_four player situation =
   | _ :: _ ->
     let Four (p1, p2) = random_element make_four_list in
     ( match player with
-      | Board.Human -> Human_make_four (p1, p2)
-      | Board.Comp -> Comp_make_four (p1, p2)
+      | Board.Human -> Human_four (p1, p2)
+      | Board.Comp -> Comp_four (p1, p2)
     )
   | [] -> Any
 
@@ -274,7 +270,7 @@ let heuristic_move gameboard =
 let analyze human_move gameboard =
   let analyze' player move =
     let sit = analyze_situation player move gameboard in
-    [numbered player sit; make_five player sit; make_four player sit] in
+    [make_multiple player sit; make_five player sit; make_four player sit] in
   List.sort compare_moves @@ (analyze' Board.Human human_move) @ (analyze' Board.Comp (!last_move))
 
 let clear () =
@@ -290,23 +286,23 @@ let move human_move gameboard =
     | Any ->
       ( match List.hd (!move_queue) with
         | Any -> heuristic_move gameboard
-        | Comp_make_five (p1, p2)
-        | Human_make_more (p1, p2)
-        | Human_make_five (p1, p2)
-        | Comp_make_more (p1, p2)
-        | Comp_make_four (p1, p2)
-        | Human_make_four (p1, p2) ->
+        | Comp_five (p1, p2)
+        | Human_multiple (p1, p2)
+        | Human_five (p1, p2)
+        | Comp_multiple (p1, p2)
+        | Comp_four (p1, p2)
+        | Human_four (p1, p2) ->
           begin
             move_queue := List.tl (!move_queue);
             (p1, p2)
           end
       )
-    | Comp_make_five (p1, p2)
-    | Human_make_more (p1, p2)
-    | Human_make_five (p1, p2)
-    | Comp_make_more (p1, p2)
-    | Comp_make_four (p1, p2)
-    | Human_make_four (p1, p2) ->
+    | Comp_five (p1, p2)
+    | Human_multiple (p1, p2)
+    | Human_five (p1, p2)
+    | Comp_multiple (p1, p2)
+    | Comp_four (p1, p2)
+    | Human_four (p1, p2) ->
       let non_any = List.filter (fun m -> m <> Any) analyzed in
       begin
         move_queue := List.rev_append non_any (!move_queue);
@@ -314,7 +310,7 @@ let move human_move gameboard =
       end in
   let rec make_move () =
     let pos = choose_pos () in
-    if Board.is_free pos gameboard
+    if get_field pos gameboard = Free
     then pos
     else make_move () in
   let move_pos = make_move () in
