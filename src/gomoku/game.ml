@@ -33,7 +33,7 @@ let start_game size =
     Random.self_init ();
     Comp_player.clear ();
     Game_gui.display size;
-    create_board @@ size + 2
+    create_board size
   end
 
 let end_game (winner, moves) =

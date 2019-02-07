@@ -9,17 +9,18 @@ exception Incorrect_gameboard of string
 exception Incorrect_player of string
 
 let create_board size =
+  let board_size = size + 2 in
   let rec create_row n m acc =
     if m = 0
     then acc
-    else if n = 1 || n = size || m = 1 || m = size
+    else if n = 1 || n = board_size || m = 1 || m = board_size
     then create_row n (m - 1) @@ Border :: acc
     else create_row n (m - 1) @@ Free :: acc in
   let rec create n acc =
     if n = 0
     then acc
-    else create (n - 1) @@ (create_row n size []) :: acc in
-  Gameboard {fields=create size []; size=size}
+    else create (n - 1) @@ (create_row n board_size []) :: acc in
+  Gameboard {fields=create board_size []; size=size}
 
 let get_field (x, y) (Gameboard {fields; _}) = List.nth (List.nth fields x) y
 
