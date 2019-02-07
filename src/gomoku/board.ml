@@ -21,7 +21,7 @@ let create_board size =
     else create (n - 1) @@ (create_row n size []) :: acc in
   Gameboard {fields=create size []; size=size}
 
-let get_field (x, y) (Gameboard {fields; size}) = List.nth (List.nth fields x) y
+let get_field (x, y) (Gameboard {fields; _}) = List.nth (List.nth fields x) y
 
 let get_row n (Gameboard {fields; _}) = List.nth fields n
 
