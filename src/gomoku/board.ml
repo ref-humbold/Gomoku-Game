@@ -1,47 +1,70 @@
 type player = Human | Comp
 
-type gameboard = player option option list list
+type field = Free | Border | Stone of player
+
+type gameboard = Gameboard of {fields: field list list; size: int}
 
 exception Incorrect_gameboard of string
 
 exception Incorrect_player of string
 
 let create_board size =
-  let rec create_row rownum i acc =
-    if i = 0
+  let rec create_row n m acc =
+    if m = size + 2
     then acc
-    else if rownum = 1 || rownum = size || i = 1 || i = size
-    then create_row rownum (i - 1) @@ (Some None) :: acc
-    else create_row rownum (i - 1) @@ None :: acc in
-  let rec create rownum acc =
-    if rownum = 0
+    else if n = 0 || n = size + 1 || m = 0 || m = size + 1
+    then create_row n (m + 1) @@ Border :: acc
+    else create_row n (m + 1) @@ Free :: acc in
+  let rec create n acc =
+    if n = size + 2
     then acc
-    else create (rownum - 1) @@ (create_row rownum size []) :: acc in
-  create size []
+    else create (n + 1) @@ (create_row n 0 []) :: acc in
+  Gameboard {fields=create 0 []; size=size}
 
-let set_move (row, col) player game =
-  let rec set_col n row' =
+let get_field (n, m) (Gameboard {fields; _}) = List.nth (List.nth fields n) m
+
+let get_row n (Gameboard {fields; _}) = List.nth fields n
+
+let get_column m (Gameboard {fields; _}) = List.map (fun lst -> List.nth lst m) fields
+
+let get_sum_diag sum (Gameboard {fields; size}) =
+  let rec extract i fields' acc =
+    match fields' with
+    | [] -> List.rev acc
+    | row :: rows ->
+      if sum - i < 0 || sum - i > size + 1
+      then extract (i + 1) rows acc
+      else extract (i + 1) rows @@ (List.nth row @@ sum - i) :: acc in
+  extract 0 fields []
+
+let get_diff_diag diff (Gameboard {fields; size}) =
+  let rec extract i fields' acc =
+    match fields' with
+    | [] -> List.rev acc
+    | row :: rows ->
+      if i - diff < 0 || i - diff > size + 1
+      then extract (i + 1) rows acc
+      else extract (i + 1) rows @@ (List.nth row @@ i - diff) :: acc in
+  extract 0 fields []
+
+let set_move (n, m) player (Gameboard g)=
+  let rec set_col i row' =
     match row' with
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ column"
-    | x :: xs ->
-      if n = 0
-      then (Some (Some player)) :: xs
-      else x :: (set_col (n - 1) xs) in
-  let rec set_row n gameboard' =
-    match gameboard' with
+    | col :: cols ->
+      if i = 0
+      then (Stone player) :: cols
+      else col :: (set_col (i - 1) cols) in
+  let rec set_row i fields' =
+    match fields' with
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
-    | x :: xs ->
-      if n = 0
-      then (set_col col x) :: xs
-      else x :: (set_row (n - 1) xs) in
-  set_row row game
+    | row :: rows ->
+      if i = 0
+      then (set_col m row) :: rows
+      else row :: (set_row (i - 1) rows) in
+  Gameboard {g with fields=set_row n g.fields}
 
 let opponent player =
   match player with
   | Human -> Comp
   | Comp -> Human
-
-let is_free (row, col) gameboard =
-  match List.nth (List.nth gameboard row) col with
-  | None -> true
-  | Some _ -> false

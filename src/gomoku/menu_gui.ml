@@ -1,11 +1,8 @@
-let buttons = [Gui.Btn {xc=Gui.ratio 1 2; yc=Gui.ratio 3 4;
-                        width=400; height=100;
+let buttons = [Gui.Btn {xc=Gui.ratio 1 2; yc=Gui.ratio 3 4; width=400; height=100;
                         label="NOWA GRA"; colour=Graphics.magenta};
-               Gui.Btn {xc=Gui.ratio 1 2; yc=Gui.ratio 1 2;
-                        width=400; height=100;
+               Gui.Btn {xc=Gui.ratio 1 2; yc=Gui.ratio 1 2; width=400; height=100;
                         label="STATYSTYKI"; colour=Graphics.magenta};
-               Gui.Btn {xc=Gui.ratio 1 2; yc=Gui.ratio 1 4;
-                        width=400; height=100;
+               Gui.Btn {xc=Gui.ratio 1 2; yc=Gui.ratio 1 4; width=400; height=100;
                         label="WYJSCIE"; colour=Graphics.magenta}]
 
 let texts = [Gui.Txt {xc=Gui.ratio 1 2; yc=Gui.ratio 7 8;
@@ -25,8 +22,9 @@ let rec click_button () =
   let clicked = List.map (Gui.check_button_clicked mouse_pos) buttons in
   let rec choose_action lst i =
     match lst with
-    | true :: _ -> i
+    | true :: _ -> Some i
     | false :: xs -> choose_action xs @@ i + 1
-    | [] -> -1 in
-  let index = choose_action clicked 0 in
-  if index >= 0 then index else click_button ()
+    | [] -> None in
+  match choose_action clicked 0 with
+  | Some index -> index
+  | None -> click_button ()
