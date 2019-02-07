@@ -1,6 +1,6 @@
 open Board
 
-let check_winner gameboard player (x, y) =
+let check_winner gameboard player (n, m) =
   let rec check lst =
     match lst with
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Free :: _ when
@@ -23,8 +23,8 @@ let check_winner gameboard player (x, y) =
         p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Free :: ps | Border :: ps | Stone _ :: ps -> check ps
     | [] -> false in
-  if List.exists check @@ [get_row x gameboard; get_column y gameboard;
-                           get_sum_diag (x + y) gameboard; get_diff_diag (x - y) gameboard]
+  if List.exists check @@ [get_row n gameboard; get_column m gameboard;
+                           get_sum_diag (n + m) gameboard; get_diff_diag (n - m) gameboard]
   then Some player
   else None
 

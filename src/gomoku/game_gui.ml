@@ -9,19 +9,18 @@ let texts = (Gui.Txt {xc=Gui.ratio 1 2; yc=Gui.ratio 92 100;
 
 let step = 24
 
+let middle = Gui.ratio 1 2
+
 let get_borders size =
   let cols = size / 2 + 1 in
-  let half = Gui.ratio 1 2 in
-  (half - step * cols, half + step * cols)
+  (middle - step * cols, middle + step * cols)
 
 let get_lines size =
-  let cols = size / 2 in
-  let half = Gui.ratio 1 2 in
   let rec get_lines' i acc =
-    if i + cols >= 0
-    then get_lines' (i - 1) @@ (half + step * i) :: acc
+    if i <= size / 2
+    then get_lines' (i + 1) @@ (middle + step * i) :: (middle - step * i) :: acc
     else acc in
-  get_lines' cols []
+  get_lines' 0 []
 
 let grid_of_point size (x, y) =
   let begline, _ = get_borders size in

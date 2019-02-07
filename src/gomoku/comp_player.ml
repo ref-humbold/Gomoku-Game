@@ -17,12 +17,12 @@ let move_queue = ref [Any]
 
 let last_move = ref (0, 0)
 
-let compare_moves m1 m2 =
-  match m1, m2 with
+let compare_moves mv1 mv2 =
+  match mv1, mv2 with
   | Any, Any -> 0
   | Any, _ -> 1
   | _, Any -> -1
-  | _, _ -> compare m1 m2
+  | _, _ -> compare mv1 mv2
 
 let get_row_dim n gameboard =
   (get_row n gameboard, Row n)
@@ -31,16 +31,15 @@ let get_column_dim m gameboard =
   (get_column m gameboard, Column m)
 
 let get_sum_diag_dim sum (Gameboard {size; _} as gameboard) =
-  (get_sum_diag sum gameboard,
-   Sum (sum, max 0 (sum - size - 1)))
+  (get_sum_diag sum gameboard, Sum (sum, max 0 (sum - size - 1)))
 
 let get_diff_diag_dim diff gameboard =
   (get_diff_diag diff gameboard, Diff (diff, max 0 diff))
 
 let random_element lst = List.nth lst @@ Random.int @@ List.length lst
 
-let compare_positions (n1, p1) (n2, p2) =
-  let nc = compare n1 n2 in
+let compare_positions (v1, p1) (v2, p2) =
+  let nc = compare v1 v2 in
   if nc = 0 then compare p1 p2 else -nc
 
 let count_points lst =
@@ -62,41 +61,41 @@ let count_nums lst =
   List.sort compare @@ cnt 1 @@ List.sort compare lst
 
 let get_empties (Gameboard {fields; size} as gameboard) =
-  let neighbours x y =
-    [get_field (x - 1, y - 1) gameboard;
-     get_field (x - 1, y) gameboard;
-     get_field (x - 1, y + 1) gameboard;
-     get_field (x, y - 1) gameboard;
-     get_field (x, y + 1) gameboard;
-     get_field (x + 1, y - 1) gameboard;
-     get_field (x + 1, y) gameboard;
-     get_field (x + 1, y + 1) gameboard] in
+  let neighbours n m =
+    [get_field (n - 1, m - 1) gameboard;
+     get_field (n - 1, m) gameboard;
+     get_field (n - 1, m + 1) gameboard;
+     get_field (n, m - 1) gameboard;
+     get_field (n, m + 1) gameboard;
+     get_field (n + 1, m - 1) gameboard;
+     get_field (n + 1, m) gameboard;
+     get_field (n + 1, m + 1) gameboard] in
   let check_stone field =
     match field with
     | Stone _ -> true
     | Border | Free -> false in
-  let rec mapi_row x y row =
+  let rec mapi_row n m row =
     match row with
     | Free :: fds ->
-      if y >= 1 && y <= size && List.exists check_stone @@ neighbours x y
-      then (x, y) :: (mapi_row x (y + 1) fds)
-      else mapi_row x (y + 1) fds
-    | Border :: fds | Stone _ :: fds -> mapi_row x (y + 1) fds
+      if m >= 1 && m <= size && List.exists check_stone @@ neighbours n m
+      then (n, m) :: (mapi_row n (m + 1) fds)
+      else mapi_row n (m + 1) fds
+    | Border :: fds | Stone _ :: fds -> mapi_row n (m + 1) fds
     | [] -> [] in
-  let rec mapi_fields x fields' =
+  let rec mapi_fields n fields' =
     match fields' with
     | row :: rows ->
-      if x >= 1 && x <= size
-      then (mapi_row x 0 row) :: (mapi_fields (x + 1) rows)
-      else mapi_fields (x + 1) rows
+      if n >= 1 && n <= size
+      then (mapi_row n 0 row) :: (mapi_fields (n + 1) rows)
+      else mapi_fields (n + 1) rows
     | [] -> [] in
   List.concat @@ mapi_fields 0 fields
 
-let analyze_situation player (row, col) gameboard =
+let analyze_situation player (n, m) gameboard =
   let pos_by dir num =
     match dir with
-    | Row r -> (r, num)
-    | Column c -> (num, c)
+    | Row n' -> (n', num)
+    | Column m' -> (num, m')
     | Sum (s, _) -> (num, s - num)
     | Diff (d, _) -> (num, num - d) in
   let rec check_at (lst, dir, numrow) acc =
@@ -143,11 +142,10 @@ let analyze_situation player (row, col) gameboard =
     match dir with
     | Row _ | Column _ -> check_at (lst, dir, 0) []
     | Sum (_, p) | Diff (_, p) -> check_at (lst, dir, p) [] in
-  let get_all r c g = [get_row_dim r g;
-                       get_column_dim c g;
-                       get_sum_diag_dim (r + c) g;
-                       get_diff_diag_dim (r - c) g] in
-  List.concat @@ List.map check @@ get_all row col gameboard
+  List.concat @@ List.map check @@ [get_row_dim n gameboard;
+                                    get_column_dim m gameboard;
+                                    get_sum_diag_dim (n + m) gameboard;
+                                    get_diff_diag_dim (n - m) gameboard]
 
 let check_board_situation player gameboard =
   let rec check acc lst =
@@ -179,9 +177,10 @@ let check_board_situation player gameboard =
       then get_d (diff + 1) @@ (get_diff_diag diff gameboard') :: acc
       else acc in
     get_d (-size + 1) [] in
-  let get_all gameboard' = List.concat [get_rows gameboard'; get_columns gameboard';
-                                        get_sum_diags gameboard'; get_diff_diags gameboard'] in
-  count_nums @@ List.concat @@ List.map (check []) @@ get_all gameboard
+  count_nums @@ List.concat @@ List.map (check []) @@ List.concat [get_rows gameboard;
+                                                                   get_columns gameboard;
+                                                                   get_sum_diags gameboard;
+                                                                   get_diff_diags gameboard]
 
 let make_multiple player situation =
   let sit_points = List.map (fun x -> match x with Five p | Four p -> p) situation in
@@ -287,27 +286,27 @@ let move human_move gameboard =
     | Any ->
       ( match List.hd (!move_queue) with
         | Any -> heuristic_move gameboard
-        | Comp_five (p1, p2)
-        | Human_multiple (p1, p2)
-        | Human_five (p1, p2)
-        | Comp_multiple (p1, p2)
-        | Comp_four (p1, p2)
-        | Human_four (p1, p2) ->
+        | Comp_five (n, m)
+        | Human_multiple (n, m)
+        | Human_five (n, m)
+        | Comp_multiple (n, m)
+        | Comp_four (n, m)
+        | Human_four (n, m) ->
           begin
             move_queue := List.tl (!move_queue);
-            (p1, p2)
+            (n, m)
           end
       )
-    | Comp_five (p1, p2)
-    | Human_multiple (p1, p2)
-    | Human_five (p1, p2)
-    | Comp_multiple (p1, p2)
-    | Comp_four (p1, p2)
-    | Human_four (p1, p2) ->
-      let non_any = List.filter (fun m -> m <> Any) analyzed in
+    | Comp_five (n, m)
+    | Human_multiple (n, m)
+    | Human_five (n, m)
+    | Comp_multiple (n, m)
+    | Comp_four (n, m)
+    | Human_four (n, m) ->
+      let non_any = List.filter (fun mv -> mv <> Any) analyzed in
       begin
         move_queue := List.rev_append non_any (!move_queue);
-        (p1, p2)
+        (n, m)
       end in
   let rec make_move () =
     let pos = choose_pos () in

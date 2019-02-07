@@ -64,8 +64,8 @@ let decode str =
     | _ -> raise @@ Stat_format_error "Stat.read" in
   stat_from_list @@ List.rev @@ split str 0 [] []
 
-let write stat_rcd =
-  let text = encode stat_rcd in
+let write stat =
+  let text = encode stat in
   let file = open_out filename in
   begin
     output_string file text;

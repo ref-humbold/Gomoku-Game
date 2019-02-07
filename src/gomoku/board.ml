@@ -9,20 +9,19 @@ exception Incorrect_gameboard of string
 exception Incorrect_player of string
 
 let create_board size =
-  let board_size = size + 2 in
   let rec create_row n m acc =
-    if m = 0
+    if m = size + 2
     then acc
-    else if n = 1 || n = board_size || m = 1 || m = board_size
-    then create_row n (m - 1) @@ Border :: acc
-    else create_row n (m - 1) @@ Free :: acc in
+    else if n = 0 || n = size + 1 || m = 0 || m = size + 1
+    then create_row n (m + 1) @@ Border :: acc
+    else create_row n (m + 1) @@ Free :: acc in
   let rec create n acc =
-    if n = 0
+    if n = size + 2
     then acc
-    else create (n - 1) @@ (create_row n board_size []) :: acc in
-  Gameboard {fields=create board_size []; size=size}
+    else create (n + 1) @@ (create_row n 0 []) :: acc in
+  Gameboard {fields=create 0 []; size=size}
 
-let get_field (x, y) (Gameboard {fields; _}) = List.nth (List.nth fields x) y
+let get_field (n, m) (Gameboard {fields; _}) = List.nth (List.nth fields n) m
 
 let get_row n (Gameboard {fields; _}) = List.nth fields n
 
@@ -48,22 +47,22 @@ let get_diff_diag diff (Gameboard {fields; size}) =
       else extract (i + 1) rows @@ (List.nth row @@ i - diff) :: acc in
   extract 0 fields []
 
-let set_move (x, y) player (Gameboard g)=
-  let rec set_col n row' =
+let set_move (n, m) player (Gameboard g)=
+  let rec set_col i row' =
     match row' with
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ column"
     | col :: cols ->
-      if n = 0
+      if i = 0
       then (Stone player) :: cols
-      else col :: (set_col (n - 1) cols) in
-  let rec set_row n fields' =
+      else col :: (set_col (i - 1) cols) in
+  let rec set_row i fields' =
     match fields' with
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
     | row :: rows ->
-      if n = 0
-      then (set_col y row) :: rows
-      else row :: (set_row (n - 1) rows) in
-  Gameboard {g with fields=set_row x g.fields}
+      if i = 0
+      then (set_col m row) :: rows
+      else row :: (set_row (i - 1) rows) in
+  Gameboard {g with fields=set_row n g.fields}
 
 let opponent player =
   match player with

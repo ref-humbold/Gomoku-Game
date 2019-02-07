@@ -7,15 +7,15 @@ let window_size = 800
 
 let window_title = "GOMOKU!!!"
 
-let ratio n d =
+let ratio num denom =
   let rec gcd a b =
     if a = 0
     then b
     else if a > b
     then gcd b a
     else gcd (b mod a) a in
-  let n' = n / (gcd n d) in
-  let d' = d / (gcd n d) in
+  let n' = num / (gcd num denom) in
+  let d' = denom / (gcd num denom) in
   n' * window_size / d'
 
 let center_text (Txt {xc; yc; label; _}) =
@@ -59,5 +59,5 @@ let mouse_click () =
   let st = Graphics.wait_next_event [Graphics.Button_down] in
   (st.Graphics.mouse_x, st.Graphics.mouse_y)
 
-let check_button_clicked (mpx, mpy) (Btn {xc; yc; width; height; _}) =
-  abs (mpx - xc) <= width && abs (mpy - yc) <= height
+let check_button_clicked (x, y) (Btn {xc; yc; width; height; _}) =
+  abs (x - xc) <= width && abs (y - yc) <= height
