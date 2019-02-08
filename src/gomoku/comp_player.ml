@@ -3,12 +3,12 @@ open Board
 type direction = Row of int | Column of int | Sum of int * int | Diff of int * int
 
 type move =
-  | Comp_five of int * int
-  | Human_multiple of int * int
-  | Human_five of int * int
-  | Comp_multiple of int * int
-  | Comp_four of int * int
-  | Human_four of int * int
+  | Comp_five of (int * int)
+  | Human_multiple of (int * int)
+  | Human_five of (int * int)
+  | Comp_multiple of (int * int)
+  | Comp_four of (int * int)
+  | Human_four of (int * int)
   | Any
 
 type hole = Five of (int * int) | Four of (int * int)
@@ -185,10 +185,10 @@ let check_board_situation player gameboard =
 let make_multiple player situation =
   let sit_points = List.map (fun x -> match x with Five p | Four p -> p) situation in
   match count_points sit_points with
-  | (n, (p1, p2)) :: _ when n > 1 ->
+  | (n, pos) :: _ when n > 1 ->
     begin match player with
-      | Board.Human -> Human_multiple (p1, p2)
-      | Board.Comp -> Comp_multiple (p1, p2)
+      | Board.Human -> Human_multiple pos
+      | Board.Comp -> Comp_multiple pos
     end
   | _ -> Any
 
@@ -197,10 +197,10 @@ let make_five player situation =
     List.filter (fun x -> match x with Five _  -> true | Four _ -> false) situation in
   match make_five_list with
   | _ :: _ ->
-    let Five (p1, p2) = random_element make_five_list in
+    let Five pos = random_element make_five_list in
     begin match player with
-      | Board.Human -> Human_five (p1, p2)
-      | Board.Comp -> Comp_five (p1, p2)
+      | Board.Human -> Human_five pos
+      | Board.Comp -> Comp_five pos
     end
   | [] -> Any
 
@@ -209,10 +209,10 @@ let make_four player situation =
     List.filter (fun x -> match x with Five _  -> false | Four _ -> true) situation in
   match make_four_list with
   | _ :: _ ->
-    let Four (p1, p2) = random_element make_four_list in
+    let Four pos = random_element make_four_list in
     begin match player with
-      | Board.Human -> Human_four (p1, p2)
-      | Board.Comp -> Comp_four (p1, p2)
+      | Board.Human -> Human_four pos
+      | Board.Comp -> Comp_four pos
     end
   | [] -> Any
 
@@ -286,27 +286,27 @@ let move human_move gameboard =
     | Any ->
       begin match List.hd (!move_queue) with
         | Any -> heuristic_move gameboard
-        | Comp_five (n, m)
-        | Human_multiple (n, m)
-        | Human_five (n, m)
-        | Comp_multiple (n, m)
-        | Comp_four (n, m)
-        | Human_four (n, m) ->
+        | Comp_five pos
+        | Human_multiple pos
+        | Human_five pos
+        | Comp_multiple pos
+        | Comp_four pos
+        | Human_four pos ->
           begin
             move_queue := List.tl (!move_queue);
-            (n, m)
+            pos
           end
       end
-    | Comp_five (n, m)
-    | Human_multiple (n, m)
-    | Human_five (n, m)
-    | Comp_multiple (n, m)
-    | Comp_four (n, m)
-    | Human_four (n, m) ->
+    | Comp_five pos
+    | Human_multiple pos
+    | Human_five pos
+    | Comp_multiple pos
+    | Comp_four pos
+    | Human_four pos ->
       let non_any = List.filter (fun mv -> mv <> Any) analyzed in
       begin
         move_queue := List.rev_append non_any (!move_queue);
-        (n, m)
+        pos
       end in
   let rec make_move () =
     let pos = choose_pos () in
