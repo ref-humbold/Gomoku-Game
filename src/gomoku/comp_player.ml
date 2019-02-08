@@ -186,10 +186,10 @@ let make_multiple player situation =
   let sit_points = List.map (fun x -> match x with Five p | Four p -> p) situation in
   match count_points sit_points with
   | (n, (p1, p2)) :: _ when n > 1 ->
-    ( match player with
+    begin match player with
       | Board.Human -> Human_multiple (p1, p2)
       | Board.Comp -> Comp_multiple (p1, p2)
-    )
+    end
   | _ -> Any
 
 let make_five player situation =
@@ -198,10 +198,10 @@ let make_five player situation =
   match make_five_list with
   | _ :: _ ->
     let Five (p1, p2) = random_element make_five_list in
-    ( match player with
+    begin match player with
       | Board.Human -> Human_five (p1, p2)
       | Board.Comp -> Comp_five (p1, p2)
-    )
+    end
   | [] -> Any
 
 let make_four player situation =
@@ -210,10 +210,10 @@ let make_four player situation =
   match make_four_list with
   | _ :: _ ->
     let Four (p1, p2) = random_element make_four_list in
-    ( match player with
+    begin match player with
       | Board.Human -> Human_four (p1, p2)
       | Board.Comp -> Comp_four (p1, p2)
-    )
+    end
   | [] -> Any
 
 let heura gameboard =
@@ -284,7 +284,7 @@ let move human_move gameboard =
   let choose_pos () =
     match List.hd analyzed with
     | Any ->
-      ( match List.hd (!move_queue) with
+      begin match List.hd (!move_queue) with
         | Any -> heuristic_move gameboard
         | Comp_five (n, m)
         | Human_multiple (n, m)
@@ -296,7 +296,7 @@ let move human_move gameboard =
             move_queue := List.tl (!move_queue);
             (n, m)
           end
-      )
+      end
     | Comp_five (n, m)
     | Human_multiple (n, m)
     | Human_five (n, m)
