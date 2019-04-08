@@ -33,5 +33,5 @@ Gomoku can be built using **Dune** with help of **GNU Make**.
 ## How to run?
 Gomoku can be run directly using the executable file in the `bin` directory:
 ```sh
-$ /path/to/directory/bin/gomoku
+$ /path-to-directory/bin/gomoku
 ```
