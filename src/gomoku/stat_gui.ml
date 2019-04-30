@@ -16,7 +16,7 @@ let rec check_click () =
   else check_click ()
 
 let display () =
-  let Stat.St {hmoves; cmoves; won; lost; thmoves; tcmoves; opened} = Stat.read () in
+  let Stat.{hmoves; cmoves; won; lost; thmoves; tcmoves; opened} = Stat.read () in
   let show_info xc yc text =
     Gui.draw_text @@ Gui.Txt {xc=xc; yc=yc; label=text; colour=Graphics.black} in
   begin

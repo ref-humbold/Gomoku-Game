@@ -1,7 +1,5 @@
 open Board
 
-type direction = Row of int | Column of int | Sum of int * int | Diff of int * int
-
 type move =
   | Comp_five of (int * int)
   | Human_multiple of (int * int)
@@ -10,12 +8,11 @@ type move =
   | Comp_four of (int * int)
   | Human_four of (int * int)
   | Any
-
+type direction = Row of int | Column of int | Sum of int * int | Diff of int * int
 type hole = Five of (int * int) | Four of (int * int)
+type move_info = {mutable queue: move list; mutable last: int * int}
 
-let move_queue = ref [Any]
-
-let last_move = ref (0, 0)
+let moving = {queue=[Any]; last=(0, 0)}
 
 let compare_moves mv1 mv2 =
   match mv1, mv2 with
@@ -24,17 +21,14 @@ let compare_moves mv1 mv2 =
   | _, Any -> -1
   | _, _ -> compare mv1 mv2
 
-let get_row_dim n gameboard =
-  (get_row n gameboard, Row n)
+let get_row_dim n gameboard = (get_row n gameboard, Row n)
 
-let get_column_dim m gameboard =
-  (get_column m gameboard, Column m)
+let get_column_dim m gameboard = (get_column m gameboard, Column m)
 
-let get_sum_diag_dim sum (Gameboard {size; _} as gameboard) =
-  (get_sum_diag sum gameboard, Sum (sum, max 0 (sum - size - 1)))
+let get_sum_diag_dim sum gameboard =
+  (get_sum_diag sum gameboard, Sum (sum, max 0 @@ sum - gameboard.size - 1))
 
-let get_diff_diag_dim diff gameboard =
-  (get_diff_diag diff gameboard, Diff (diff, max 0 diff))
+let get_diff_diag_dim diff gameboard = (get_diff_diag diff gameboard, Diff (diff, max 0 diff))
 
 let random_element lst = List.nth lst @@ Random.int @@ List.length lst
 
@@ -45,8 +39,7 @@ let compare_positions (v1, p1) (v2, p2) =
 let count_points lst =
   let rec cnt num lst' =
     match lst' with
-    | x1 :: (x2 :: _ as xt) ->
-      if x1 = x2 then cnt (num + 1) xt else (num, x1) :: (cnt 1 xt)
+    | x1 :: (x2 :: _ as xt) -> if x1 = x2 then cnt (num + 1) xt else (num, x1) :: (cnt 1 xt)
     | [x] -> [(num, x)]
     | [] -> [] in
   List.sort compare_positions @@ cnt 1 @@ List.sort compare lst
@@ -54,13 +47,12 @@ let count_points lst =
 let count_nums lst =
   let rec cnt num lst' =
     match lst' with
-    | x1 :: (x2 :: _ as xt) ->
-      if x1 = x2 then cnt (num + 1) xt else (x1, num) :: (cnt 1 xt)
+    | x1 :: (x2 :: _ as xt) -> if x1 = x2 then cnt (num + 1) xt else (x1, num) :: (cnt 1 xt)
     | [x] -> [(x, num)]
     | [] -> [] in
   List.sort compare @@ cnt 1 @@ List.sort compare lst
 
-let get_empties (Gameboard {fields; size} as gameboard) =
+let get_empties gameboard =
   let neighbours n m =
     [get_field (n - 1, m - 1) gameboard;
      get_field (n - 1, m) gameboard;
@@ -77,7 +69,7 @@ let get_empties (Gameboard {fields; size} as gameboard) =
   let rec mapi_row n m row =
     match row with
     | Free :: fds ->
-      if m >= 1 && m <= size && List.exists check_stone @@ neighbours n m
+      if m >= 1 && m <= gameboard.size && List.exists check_stone @@ neighbours n m
       then (n, m) :: (mapi_row n (m + 1) fds)
       else mapi_row n (m + 1) fds
     | Border :: fds | Stone _ :: fds -> mapi_row n (m + 1) fds
@@ -85,11 +77,11 @@ let get_empties (Gameboard {fields; size} as gameboard) =
   let rec mapi_fields n fields' =
     match fields' with
     | row :: rows ->
-      if n >= 1 && n <= size
+      if n >= 1 && n <= gameboard.size
       then (mapi_row n 0 row) :: (mapi_fields (n + 1) rows)
       else mapi_fields (n + 1) rows
     | [] -> [] in
-  List.concat @@ mapi_fields 0 fields
+  List.concat @@ mapi_fields 0 gameboard.fields
 
 let analyze_situation player (n, m) gameboard =
   let pos_by dir num =
@@ -162,21 +154,20 @@ let check_board_situation player gameboard =
       check (2 :: acc) ps
     | Free :: ps | Border ::ps | Stone _ :: ps -> check acc ps
     | [] -> acc in
-  let get_rows (Gameboard {fields; _}) = fields in
-  let get_columns (Gameboard {fields; _} as gameboard') =
-    List.mapi (fun i _ -> get_column i gameboard') fields in
-  let get_sum_diags (Gameboard {size; _} as gameboard') =
+  let get_rows {fields; _} = fields in
+  let get_columns gameboard' = List.mapi (fun i _ -> get_column i gameboard') gameboard'.fields in
+  let get_sum_diags gameboard' =
     let rec get_s sum acc =
-      if sum <= size + size
+      if sum <= gameboard'.size * 2
       then get_s (sum + 1) @@ (get_sum_diag sum gameboard') :: acc
       else acc in
     get_s 2 [] in
-  let get_diff_diags (Gameboard {size; _} as gameboard') =
+  let get_diff_diags gameboard' =
     let rec get_d diff acc =
-      if diff <= size - 1
+      if diff <= gameboard'.size - 1
       then get_d (diff + 1) @@ (get_diff_diag diff gameboard') :: acc
       else acc in
-    get_d (-size + 1) [] in
+    get_d (-gameboard'.size + 1) [] in
   count_nums @@ List.concat @@ List.map (check []) @@ List.concat [get_rows gameboard;
                                                                    get_columns gameboard;
                                                                    get_sum_diags gameboard;
@@ -187,8 +178,8 @@ let make_multiple player situation =
   match count_points sit_points with
   | (n, pos) :: _ when n > 1 ->
     begin match player with
-      | Board.Human -> Human_multiple pos
-      | Board.Comp -> Comp_multiple pos
+      | Human -> Human_multiple pos
+      | Comp -> Comp_multiple pos
     end
   | _ -> Any
 
@@ -199,8 +190,8 @@ let make_five player situation =
   | _ :: _ ->
     let Five pos = random_element make_five_list in
     begin match player with
-      | Board.Human -> Human_five pos
-      | Board.Comp -> Comp_five pos
+      | Human -> Human_five pos
+      | Comp -> Comp_five pos
     end
   | [] -> Any
 
@@ -211,14 +202,14 @@ let make_four player situation =
   | _ :: _ ->
     let Four pos = random_element make_four_list in
     begin match player with
-      | Board.Human -> Human_four pos
-      | Board.Comp -> Comp_four pos
+      | Human -> Human_four pos
+      | Comp -> Comp_four pos
     end
   | [] -> Any
 
 let heura gameboard =
-  let comp_sit = check_board_situation Board.Comp gameboard in
-  let human_sit = check_board_situation Board.Human gameboard in
+  let comp_sit = check_board_situation Comp gameboard in
+  let human_sit = check_board_situation Human gameboard in
   let rec diffs n =
     if n = 0
     then []
@@ -246,37 +237,32 @@ let heuristic_move gameboard =
         match lst with
         | [] -> acc
         | p :: ps ->
-          let next_gameboard = Board.set_move p player gameboard' in
-          let next = forward_move (level - 1) a' b' (Board.opponent player) next_gameboard in
-          let nacc = (p, snd next) in
+          let gameboard'' = set_move p player gameboard' in
+          let acc' = (p, snd @@ forward_move (level - 1) a' b' (opponent player) gameboard'') in
           match player with
-          | Board.Comp ->
-            let new_acc = cmp (>) nacc acc in
-            let new_a = max (snd new_acc) a' in
-            if new_a >= b'
-            then new_acc
-            else find_res new_a b' ps new_acc
-          | Board.Human ->
-            let new_acc = cmp (<) nacc acc in
-            let new_b = min (snd new_acc) b' in
-            if a' >= new_b
-            then new_acc
-            else find_res a' new_b ps new_acc in
+          | Comp ->
+            let acc'' = cmp (>) acc' acc in
+            let a' = max (snd acc'') a' in
+            if a' >= b' then acc'' else find_res a' b' ps acc''
+          | Human ->
+            let acc'' = cmp (<) acc' acc in
+            let b' = min (snd acc'') b' in
+            if a' >= b' then acc'' else find_res a' b' ps acc'' in
       match player with
-      | Board.Comp -> find_res a b empty_pos ((0, 0), neg_infinity)
-      | Board.Human -> find_res a b empty_pos ((0, 0), infinity) in
-  fst @@ forward_move 4 neg_infinity infinity Board.Comp gameboard
+      | Comp -> find_res a b empty_pos ((0, 0), neg_infinity)
+      | Human -> find_res a b empty_pos ((0, 0), infinity) in
+  fst @@ forward_move 4 neg_infinity infinity Comp gameboard
 
 let analyze human_move gameboard =
   let analyze' player move =
     let sit = analyze_situation player move gameboard in
     [make_multiple player sit; make_five player sit; make_four player sit] in
-  List.sort compare_moves @@ (analyze' Board.Human human_move) @ (analyze' Board.Comp (!last_move))
+  List.sort compare_moves @@ (analyze' Human human_move) @ (analyze' Comp moving.last)
 
 let clear () =
   begin
-    move_queue := [Any];
-    last_move := (0, 0)
+    moving.queue <- [Any];
+    moving.last <- (0, 0)
   end
 
 let move human_move gameboard =
@@ -284,7 +270,7 @@ let move human_move gameboard =
   let choose_pos () =
     match List.hd analyzed with
     | Any ->
-      begin match List.hd (!move_queue) with
+      begin match List.hd moving.queue with
         | Any -> heuristic_move gameboard
         | Comp_five pos
         | Human_multiple pos
@@ -293,7 +279,7 @@ let move human_move gameboard =
         | Comp_four pos
         | Human_four pos ->
           begin
-            move_queue := List.tl (!move_queue);
+            moving.queue <- List.tl moving.queue;
             pos
           end
       end
@@ -305,7 +291,7 @@ let move human_move gameboard =
     | Human_four pos ->
       let non_any = List.filter (fun mv -> mv <> Any) analyzed in
       begin
-        move_queue := List.rev_append non_any (!move_queue);
+        moving.queue <- List.rev_append non_any moving.queue;
         pos
       end in
   let rec make_move () =
@@ -315,6 +301,6 @@ let move human_move gameboard =
     else make_move () in
   let move_pos = make_move () in
   begin
-    last_move := move_pos;
+    moving.last <- move_pos;
     move_pos
   end

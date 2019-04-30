@@ -1,11 +1,8 @@
 type player = Human | Comp
-
 type field = Free | Border | Stone of player
-
-type gameboard = Gameboard of {fields: field list list; size: int}
+type gameboard = {fields: field list list; size: int}
 
 exception Incorrect_gameboard of string
-
 exception Incorrect_player of string
 
 let create_board size =
@@ -19,15 +16,15 @@ let create_board size =
     if n = size + 2
     then acc
     else create (n + 1) @@ (create_row n 0 []) :: acc in
-  Gameboard {fields=create 0 []; size=size}
+  {fields=create 0 []; size}
 
-let get_field (n, m) (Gameboard {fields; _}) = List.nth (List.nth fields n) m
+let get_field (n, m) {fields; _} = List.nth (List.nth fields n) m
 
-let get_row n (Gameboard {fields; _}) = List.nth fields n
+let get_row n {fields; _} = List.nth fields n
 
-let get_column m (Gameboard {fields; _}) = List.map (fun lst -> List.nth lst m) fields
+let get_column m {fields; _} = List.map (fun lst -> List.nth lst m) fields
 
-let get_sum_diag sum (Gameboard {fields; size}) =
+let get_sum_diag sum {fields; size} =
   let rec extract i fields' acc =
     match fields' with
     | [] -> List.rev acc
@@ -37,7 +34,7 @@ let get_sum_diag sum (Gameboard {fields; size}) =
       else extract (i + 1) rows @@ (List.nth row @@ sum - i) :: acc in
   extract 0 fields []
 
-let get_diff_diag diff (Gameboard {fields; size}) =
+let get_diff_diag diff {fields; size} =
   let rec extract i fields' acc =
     match fields' with
     | [] -> List.rev acc
@@ -47,7 +44,7 @@ let get_diff_diag diff (Gameboard {fields; size}) =
       else extract (i + 1) rows @@ (List.nth row @@ i - diff) :: acc in
   extract 0 fields []
 
-let set_move (n, m) player (Gameboard g)=
+let set_move (n, m) player gameboard =
   let rec set_col i row' =
     match row' with
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ column"
@@ -62,7 +59,7 @@ let set_move (n, m) player (Gameboard g)=
       if i = 0
       then (set_col m row) :: rows
       else row :: (set_row (i - 1) rows) in
-  Gameboard {g with fields=set_row n g.fields}
+  {gameboard with fields=set_row n gameboard.fields}
 
 let opponent player =
   match player with
