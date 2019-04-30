@@ -42,24 +42,24 @@ let end_game (winner, moves) =
     Game_gui.return winner
   end
 
-let play_game (Gameboard {size; _} as gameboard) =
-  let rec turn gameboard' (Stat.Moves mvs) last_pos player =
+let play_game gameboard =
+  let rec turn gameboard' mvs last_pos player =
     let move_pos =
       match player with
       | Human -> Human_player.move gameboard'
       | Comp -> Comp_player.move last_pos gameboard' in
     let new_moves =
       match player with
-      | Human -> Stat.Moves {mvs with human_mv=mvs.human_mv + 1}
-      | Comp -> Stat.Moves {mvs with comp_mv=mvs.comp_mv + 1} in
+      | Human -> Stat.{mvs with human_mv=mvs.human_mv + 1}
+      | Comp -> Stat.{mvs with comp_mv=mvs.comp_mv + 1} in
     let new_gameboard = set_move move_pos player gameboard' in
     begin
-      Game_gui.draw_stone size player move_pos;
+      Game_gui.draw_stone gameboard.size player move_pos;
       match check_winner new_gameboard player move_pos with
       | None -> turn new_gameboard new_moves move_pos @@ opponent player
       | Some player -> (player, new_moves)
     end in
-  turn gameboard (Stat.Moves {human_mv=0; comp_mv=0}) (0, 0) Human
+  turn gameboard Stat.{human_mv=0; comp_mv=0} (0, 0) Human
 
 let run size =
   let gameboard = start_game size in
