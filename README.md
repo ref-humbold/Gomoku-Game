@@ -2,7 +2,7 @@
 Single-player gomoku game in Ocaml
 
 ## About
-Gomoku is a small two-player (human vs computer) game written in OCaml language. Human player uses white stones and begins each game, whereas computer player uses black stones. Winner is the first player which puts 5 stones of their colour in an unbroken chain either horizontally, vertically or diagonally.
+Gomoku is a small single-player (human vs computer) game written in OCaml language. Human player uses white stones and begins each game, whereas computer player uses black stones. Winner is the first player who puts 5 stones of their colour in an unbroken chain either horizontally, vertically or diagonally.
 
 LET'S PLAY GOMOKU!
 
