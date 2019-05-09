@@ -21,7 +21,7 @@ let rec check_click () =
   else if Gui.check_button_clicked mouse_pos @@ snd buttons
   then (
     Stat.clear () ;
-    1)
+    1 )
   else check_click ()
 
 let display () =

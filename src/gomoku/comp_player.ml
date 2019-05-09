@@ -191,14 +191,14 @@ let make_multiple player situation =
     List.map
       (fun x ->
         match x with
-        | Five p | Four p -> p)
+        | Five p | Four p -> p )
       situation
   in
   match count_points sit_points with
-  | (n, pos) :: _ when n > 1 -> (
-    match player with
+  | (n, pos) :: _ when n > 1 ->
+    ( match player with
     | Human -> Human_multiple pos
-    | Comp -> Comp_multiple pos)
+    | Comp -> Comp_multiple pos )
   | _ -> Any
 
 let make_five player situation =
@@ -207,15 +207,15 @@ let make_five player situation =
       (fun x ->
         match x with
         | Five _ -> true
-        | Four _ -> false)
+        | Four _ -> false )
       situation
   in
   match make_five_list with
-  | _ :: _ -> (
+  | _ :: _ ->
     let (Five pos) = random_element make_five_list in
-    match player with
+    ( match player with
     | Human -> Human_five pos
-    | Comp -> Comp_five pos)
+    | Comp -> Comp_five pos )
   | [] -> Any
 
 let make_four player situation =
@@ -224,15 +224,15 @@ let make_four player situation =
       (fun x ->
         match x with
         | Five _ -> false
-        | Four _ -> true)
+        | Four _ -> true )
       situation
   in
   match make_four_list with
-  | _ :: _ -> (
+  | _ :: _ ->
     let (Four pos) = random_element make_four_list in
-    match player with
+    ( match player with
     | Human -> Human_four pos
-    | Comp -> Comp_four pos)
+    | Comp -> Comp_four pos )
   | [] -> Any
 
 let heura gameboard =
@@ -269,10 +269,10 @@ let heuristic_move gameboard =
       let rec find_res a' b' lst acc =
         match lst with
         | [] -> acc
-        | p :: ps -> (
+        | p :: ps ->
           let gameboard'' = set_move p player gameboard' in
           let acc' = (p, snd @@ forward_move (level - 1) a' b' (opponent player) gameboard'') in
-          match player with
+          ( match player with
           | Comp ->
             let acc'' = cmp ( > ) acc' acc in
             let a' = max (snd acc'') a' in
@@ -280,7 +280,7 @@ let heuristic_move gameboard =
           | Human ->
             let acc'' = cmp ( < ) acc' acc in
             let b' = min (snd acc'') b' in
-            if a' >= b' then acc'' else find_res a' b' ps acc'')
+            if a' >= b' then acc'' else find_res a' b' ps acc'' )
       in
       match player with
       | Comp -> find_res a b empty_pos ((0, 0), neg_infinity)
@@ -303,8 +303,8 @@ let move human_move gameboard =
   let analyzed = analyze human_move gameboard in
   let choose_pos () =
     match List.hd analyzed with
-    | Any -> (
-      match List.hd moving.queue with
+    | Any ->
+      ( match List.hd moving.queue with
       | Any -> heuristic_move gameboard
       | Comp_five pos
        |Human_multiple pos
@@ -313,7 +313,7 @@ let move human_move gameboard =
        |Comp_four pos
        |Human_four pos ->
         moving.queue <- List.tl moving.queue ;
-        pos)
+        pos )
     | Comp_five pos
      |Human_multiple pos
      |Human_five pos
