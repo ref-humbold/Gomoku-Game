@@ -1,7 +1,8 @@
-.gomoku.stat
-
 # OCaml, Dune
 _build
-gomoku
 *.install
 **/.merlin
+gomoku
+
+# Gomoku-Game stat file
+.gomoku.stat

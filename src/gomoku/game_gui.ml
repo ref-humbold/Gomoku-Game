@@ -71,7 +71,7 @@ let return winner =
   in
   let rec check_click () =
     let mouse_pos = Gui.mouse_click () in
-    if Gui.check_button_clicked mouse_pos button then () else check_click ()
+    if not @@ Gui.check_button_clicked mouse_pos button then check_click ()
   in
   show_winner () ;
   Gui.draw_button button ;

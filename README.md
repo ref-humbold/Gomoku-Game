@@ -19,7 +19,7 @@ Build process:
 Additional libraries:
 + OCaml Graphics
 
-Automated formatting by: 
+Automated formatting by:
 + Ocamlformat
 + Ocp-indent
 
@@ -31,7 +31,7 @@ Gomoku can be built using **Dune** with help of **GNU Make**.
 Possible Make targets are:
 + `make` - same as `make all`
 + `make all` - format source files & compile source files & link executable
-+ `make gomoku` - compile source files & link executable
++ `make compile` - compile source files & link executable
 + `make refresh` - remove additional build files & format source files & compile source files & link executable
 
 ## How to run?
