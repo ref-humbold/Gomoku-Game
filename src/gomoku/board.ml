@@ -1,8 +1,11 @@
 type player = Human | Comp
+
 type field = Free | Border | Stone of player
+
 type gameboard = {fields: field list list; size: int}
 
 exception Incorrect_gameboard of string
+
 exception Incorrect_player of string
 
 let create_board size =

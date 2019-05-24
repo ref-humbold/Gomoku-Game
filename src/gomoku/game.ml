@@ -34,9 +34,9 @@ let check_winner gameboard player (n, m) =
     | [] -> false
   in
   if List.exists check
-     @@ [ get_row n gameboard; get_column m gameboard;
-          get_sum_diag (n + m) gameboard;
-          get_diff_diag (n - m) gameboard ]
+    @@ [ get_row n gameboard; get_column m gameboard;
+         get_sum_diag (n + m) gameboard;
+         get_diff_diag (n - m) gameboard ]
   then Some player
   else None
 
@@ -59,12 +59,8 @@ let play_game gameboard =
     in
     let new_moves =
       match player with
-      | Human ->
-        let open Stat in
-        {mvs with human_mv= mvs.human_mv + 1}
-      | Comp ->
-        let open Stat in
-        {mvs with comp_mv= mvs.comp_mv + 1}
+      | Human -> Stat.{mvs with human_mv= mvs.human_mv + 1}
+      | Comp -> Stat.{mvs with comp_mv= mvs.comp_mv + 1}
     in
     let new_gameboard = set_move move_pos player gameboard' in
     Game_gui.draw_stone gameboard.size player move_pos ;
@@ -72,12 +68,7 @@ let play_game gameboard =
     | None -> turn new_gameboard new_moves move_pos @@ opponent player
     | Some player -> (player, new_moves)
   in
-  turn
-    gameboard
-    (let open Stat in
-    {human_mv= 0; comp_mv= 0})
-    (0, 0)
-    Human
+  turn gameboard Stat.{human_mv= 0; comp_mv= 0} (0, 0) Human
 
 let run size =
   let gameboard = start_game size in

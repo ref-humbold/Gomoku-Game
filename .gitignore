@@ -2,6 +2,6 @@
 
 # OCaml, Dune
 _build
-bin
+gomoku
 *.install
 **/.merlin

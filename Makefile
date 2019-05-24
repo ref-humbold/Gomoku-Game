@@ -1,21 +1,22 @@
-BUILD = _build/install/default/bin
-BIN = bin
+BUILD_BIN = _build/install/default/bin
+
+SRC = src
 EXEC = gomoku
 
-.PHONY : all clean refresh fmt
+.PHONY : all clean refresh format
 
-all : fmt gomoku
+all : gomoku
 
 clean :
-	rm -fr $(BIN)
+	rm -f $(EXEC)
 	dune clean
 
 refresh : clean all
 
-gomoku :
+gomoku : format
 	dune build
-	mkdir -p $(BIN)
-	ln -sfn ../$(BUILD)/$(EXEC) $(BIN)/$(EXEC)
+	ln -sfn $(BUILD_BIN)/$(EXEC)
 
-fmt :
+format :
 	dune build @fmt --auto-promote > /dev/null 2> /dev/null; test $$? -le 1
+	for F in $$(find $(SRC) -regextype egrep -regex '.+\.mli?'); do ocp-indent -i $$F; done
