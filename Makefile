@@ -18,5 +18,5 @@ gomoku : format
 	ln -sfn $(BUILD_BIN)/$(EXEC)
 
 format :
-	dune build @fmt --auto-promote > /dev/null 2> /dev/null; test $$? -le 1
+	dune build @fmt --auto-promote > /dev/null 2> /dev/null; [ $$? -le 1 ]
 	for F in $$(find $(SRC) -regextype egrep -regex '.+\.mli?'); do ocp-indent -i $$F; done
