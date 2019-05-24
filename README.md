@@ -30,12 +30,12 @@ Gomoku can be built using **Dune** with help of **GNU Make**.
 
 Possible Make targets are:
 + `make` - same as `make all`
-+ `make gomoku` - same as `make all`
-+ `make all` - compile source files & create executable
-+ `make refresh` - remove additional build files & compile source files & create executable
++ `make all` - format source files & compile source files & link executable
++ `make gomoku` - compile source files & link executable
++ `make refresh` - remove additional build files & format source files & compile source files & link executable
 
 ## How to run?
-Gomoku can be run directly using the executable file in the `bin` directory:
+Gomoku can be run directly using the executable file in the project root directory:
 ```sh
-$ /path-to-directory/bin/gomoku
+$ /path-to-directory/gomoku
 ```
