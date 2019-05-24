@@ -24,11 +24,11 @@ Additional libraries:
 ## How to build?
 Gomoku can be built using **Dune** with help of **GNU Make**.
 
-> Possible Make targets are:
-> + `make` - same as `make all`
-> + `make gomoku` - same as `make all`
-> + `make all` - compile source files & create executable
-> + `make refresh` - remove additional build files & compile source files & create executable
+Possible Make targets are:
++ `make` - same as `make all`
++ `make gomoku` - same as `make all`
++ `make all` - compile source files & create executable
++ `make refresh` - remove additional build files & compile source files & create executable
 
 ## How to run?
 Gomoku can be run directly using the executable file in the `bin` directory:
