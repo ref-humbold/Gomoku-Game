@@ -5,7 +5,7 @@ EXEC = gomoku
 
 .PHONY : all clean refresh format
 
-all : gomoku
+all : format gomoku
 
 clean :
 	rm -f $(EXEC)
@@ -13,7 +13,7 @@ clean :
 
 refresh : clean all
 
-gomoku : format
+gomoku :
 	dune build
 	ln -sfn $(BUILD_BIN)/$(EXEC)
 
