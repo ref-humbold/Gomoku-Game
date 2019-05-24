@@ -19,6 +19,10 @@ Build process:
 Additional libraries:
 + OCaml Graphics
 
+Automated formatting by: 
++ Ocamlformat
++ Ocp-indent
+
 -----
 
 ## How to build?
