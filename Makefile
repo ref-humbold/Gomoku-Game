@@ -1,21 +1,20 @@
 BUILD_BIN = _build/install/default/bin
-
 SRC = src
-EXEC = gomoku
+GOMOKU = gomoku
 
-.PHONY : all clean refresh format
+.PHONY : all clean compile refresh format
 
-all : format gomoku
+all : format compile
 
 clean :
-	rm -f $(EXEC)
+	rm -f $(GOMOKU)
 	dune clean
 
 refresh : clean all
 
-gomoku :
+compile :
 	dune build
-	ln -sfn $(BUILD_BIN)/$(EXEC)
+	ln -sfn $(BUILD_BIN)/$(GOMOKU)
 
 format :
 	dune build @fmt --auto-promote > /dev/null 2> /dev/null; [ $$? -le 1 ]
