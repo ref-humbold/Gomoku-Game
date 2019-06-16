@@ -11,8 +11,11 @@ LET'S PLAY GOMOKU!
 ## Dependencies
 
 ### Standard build & run
+
+> **Linux-based operating system**
+
 Build process:
-+ [OCaml 4.02](https://ocaml.org)
++ [OCaml](https://ocaml.org) version >= 4.05.0
 + [Dune](https://dune.build)
 + [GNU Make](https://www.gnu.org/software/make)
 
@@ -35,7 +38,7 @@ Possible Make targets are:
 + `make refresh` - remove additional build files & format source files & compile source files & link executable
 
 ## How to run?
-Gomoku can be run directly using the executable file in the project root directory:
+Gomoku can be run directly using the executable file in the `bin` directory:
 ```sh
-$ /path-to-directory/gomoku
+$ /path-to-project-directory/bin/gomoku
 ```

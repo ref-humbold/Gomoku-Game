@@ -1,5 +1,6 @@
 BUILD_BIN = _build/install/default/bin
 GOMOKU = gomoku
+BIN = bin
 SRC = src
 
 .PHONY : all clean compile format refresh
@@ -7,14 +8,15 @@ SRC = src
 all : format compile
 
 clean :
-	rm -f $(GOMOKU)
+	rm -fr $(BIN)
 	dune clean
 
 refresh : clean all
 
 compile :
 	dune build
-	ln -sfn $(BUILD_BIN)/$(GOMOKU)
+	mkdir -p $(BIN)
+	ln -sfn ../$(BUILD_BIN)/$(GOMOKU) $(BIN)/$(GOMOKU)
 
 format :
 	dune build @fmt --auto-promote > /dev/null 2> /dev/null; [ $$? -le 1 ]
