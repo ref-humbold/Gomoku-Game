@@ -1,7 +1,9 @@
 BUILD_BIN = _build/install/default/bin
-GOMOKU = gomoku
+
 BIN = bin
 SRC = src
+
+BIN_DIST = gomoku
 
 .PHONY : all clean compile format refresh
 
@@ -16,7 +18,7 @@ refresh : clean all
 compile :
 	dune build
 	mkdir -p $(BIN)
-	ln -sfn ../$(BUILD_BIN)/$(GOMOKU) $(BIN)/$(GOMOKU)
+	ln -sfn ../$(BUILD_BIN)/$(BIN_DIST) $(BIN)/$(BIN_DIST)
 
 format :
 	dune build @fmt --auto-promote > /dev/null 2> /dev/null; [ $$? -le 1 ]

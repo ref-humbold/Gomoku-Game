@@ -11,20 +11,20 @@ LET'S PLAY GOMOKU!
 ## Dependencies
 
 ### Standard build & run
-
-> **Linux-based operating system**
+> *versions used by the author are in double parentheses and italic*
 
 Build process:
-+ [OCaml](https://ocaml.org) version >= 4.05.0
-+ [Dune](https://dune.build)
-+ [GNU Make](https://www.gnu.org/software/make)
++ Linux-based operating system *((Debian testing))*
++ [OCaml](https://ocaml.org) *((4.07.0))*
++ [Dune](https://dune.build) *((1.10.0))*
++ [GNU Make](https://www.gnu.org/software/make) *((4.2.1))*
 
 Additional libraries:
-+ OCaml Graphics
++ OCaml Graphics *((4.07.0))*
 
 Automated formatting by:
-+ Ocamlformat
-+ Ocp-indent
++ Ocamlformat *((0.9))*
++ Ocp-indent *((1.7.0))*
 
 -----
 
