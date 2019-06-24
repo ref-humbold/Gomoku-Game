@@ -1,11 +1,12 @@
 # [ OCaml ]
-# output
-gomoku
-
-# Dune
+# OCaml / Dune output
+bin
 _build
 *.install
 **/.merlin
+
+# Visual Studio Code
+.vscode
 
 # Gomoku-Game stat file
 .gomoku.stat
