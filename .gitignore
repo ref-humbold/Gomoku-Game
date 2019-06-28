@@ -1,9 +1,10 @@
 # [ OCaml ]
 # OCaml / Dune output
-bin
-_build
+bin/
+dist/
+_build/
 *.install
-**/.merlin
+.merlin
 
 # Visual Studio Code
 .vscode
