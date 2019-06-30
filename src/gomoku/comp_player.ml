@@ -1,13 +1,13 @@
 open Board
 
 type move =
+  | Any
   | Comp_five of (int * int)
   | Human_multiple of (int * int)
   | Human_five of (int * int)
   | Comp_multiple of (int * int)
   | Comp_four of (int * int)
   | Human_four of (int * int)
-  | Any
 
 type direction = Row of int | Column of int | Sum of int * int | Diff of int * int
 
@@ -16,13 +16,6 @@ type hole = Five of (int * int) | Four of (int * int)
 type move_info = {mutable queue: move list; mutable last: int * int}
 
 let moving = {queue= [Any]; last= (0, 0)}
-
-let compare_moves mv1 mv2 =
-  match (mv1, mv2) with
-  | Any, Any -> 0
-  | Any, _ -> 1
-  | _, Any -> -1
-  | _, _ -> compare mv1 mv2
 
 let get_row_dim n gameboard = (get_row n gameboard, Row n)
 
@@ -295,7 +288,7 @@ let analyze human_move gameboard =
     let sit = analyze_situation player move gameboard in
     [make_multiple player sit; make_five player sit; make_four player sit]
   in
-  List.sort compare_moves @@ analyze' Human human_move @ analyze' Comp moving.last
+  List.sort compare @@ analyze' Human human_move @ analyze' Comp moving.last
 
 let clear () =
   moving.queue <- [Any] ;
