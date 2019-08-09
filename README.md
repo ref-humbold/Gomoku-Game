@@ -20,7 +20,7 @@ Build process:
 + [GNU Make](https://www.gnu.org/software/make) *((4.2.1))*
 
 Additional libraries:
-+ OCaml Graphics *((4.07.0))*
++ Graphics *((4.07.0))*
 
 Automated formatting by:
 + Ocamlformat *((0.11))*
