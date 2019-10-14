@@ -5,15 +5,17 @@ SRC = src
 
 BIN_DIST = gomoku
 
-.PHONY : all clean compile format refresh
+.PHONY : all build clean compile format refresh
 
-all : format compile
+all : compile
 
 clean :
 	rm -fr $(BIN)
 	dune clean
 
 refresh : clean all
+
+build : format all
 
 compile :
 	dune build

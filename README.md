@@ -11,20 +11,20 @@ LET'S PLAY GOMOKU!
 ## Dependencies
 
 ### Standard build & run
-> *versions used by the author are in double parentheses and italic*
+> *versions last used by the author are in double parentheses and italic*
 
 Build process:
 + Linux-based operating system *((Debian testing))*
 + [OCaml](https://ocaml.org) *((4.07.0))*
-+ [Dune](https://dune.build) *((1.11.0))*
++ [Dune](https://dune.build) *((1.11.4))*
 + [GNU Make](https://www.gnu.org/software/make) *((4.2.1))*
 
 Additional libraries:
 + Graphics *((4.07.0))*
 
 Automated formatting by:
-+ Ocamlformat *((0.11))*
-+ Ocp-indent *((1.7.0))*
++ Ocamlformat *((0.11.0))*
++ Ocp-indent *((1.8.0))*
 
 -----
 
@@ -32,10 +32,10 @@ Automated formatting by:
 Gomoku can be built using **Dune** with help of **GNU Make**.
 
 Possible Make targets are:
-+ `make` - same as `make all`
-+ `make all` - format source files & compile source files & link executable
++ `make`, `make all` - same as `make compile`
 + `make compile` - compile source files & link executable
-+ `make refresh` - remove additional build files & format source files & compile source files & link executable
++ `make build` - format source files & compile source files & link executable
++ `make refresh` - remove additional build files & compile source files & link executable
 
 ## How to run?
 Gomoku can be run directly using the executable file in the `bin` directory:
