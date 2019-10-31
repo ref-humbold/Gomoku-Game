@@ -24,7 +24,7 @@ Additional libraries:
 
 Automated formatting by:
 + Ocamlformat *((0.11.0))*
-+ Ocp-indent *((1.8.0))*
++ Ocp-indent *((1.8.1))*
 
 -----
 

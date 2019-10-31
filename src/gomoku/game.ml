@@ -34,8 +34,7 @@ let check_winner gameboard player (n, m) =
     | [] -> false
   in
   if List.exists check
-    @@ [ get_row n gameboard; get_column m gameboard;
-         get_sum_diag (n + m) gameboard;
+    @@ [ get_row n gameboard; get_column m gameboard; get_sum_diag (n + m) gameboard;
          get_diff_diag (n - m) gameboard ]
   then Some player
   else None
