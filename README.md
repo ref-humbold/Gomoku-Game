@@ -23,7 +23,7 @@ Additional libraries:
 + Graphics *((4.07.0))*
 
 Automated formatting by:
-+ Ocamlformat *((0.11.0))*
++ Ocamlformat *((0.12))*
 + Ocp-indent *((1.8.1))*
 
 -----
