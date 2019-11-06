@@ -1,16 +1,17 @@
 let button =
   Gui.Btn
-    { xc= Gui.ratio 1 2;
-      yc= Gui.ratio 1 16;
-      width= 160;
-      height= 30;
-      label= "POWROT";
-      colour= Graphics.white }
+    { xc = Gui.ratio 1 2;
+      yc = Gui.ratio 1 16;
+      width = 160;
+      height = 30;
+      label = "POWROT";
+      colour = Graphics.white }
 
 let texts =
-  ( Gui.Txt {xc= Gui.ratio 1 2; yc= Gui.ratio 92 100; label= "WYGRANA!!! :)"; colour= Graphics.blue},
-    Gui.Txt {xc= Gui.ratio 1 2; yc= Gui.ratio 92 100; label= "PRZEGRANA :("; colour= Graphics.red}
-  )
+  ( Gui.Txt
+      {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "WYGRANA!!! :)"; colour = Graphics.blue},
+    Gui.Txt
+      {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "PRZEGRANA :("; colour = Graphics.red} )
 
 let step = 24
 
@@ -73,6 +74,4 @@ let return winner =
     let mouse_pos = Gui.mouse_click () in
     if not @@ Gui.check_button_clicked mouse_pos button then check_click ()
   in
-  show_winner () ;
-  Gui.draw_button button ;
-  check_click ()
+  show_winner () ; Gui.draw_button button ; check_click ()

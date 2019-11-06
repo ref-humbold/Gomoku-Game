@@ -7,9 +7,7 @@ and run_stat () =
   List.nth [run_menu; run_stat] (Stat_gui.check_click ()) () ;
   run_menu ()
 
-and run_game size =
-  Game.run size ;
-  run_menu ()
+and run_game size = Game.run size ; run_menu ()
 
 and run_board () =
   Board_gui.display () ;

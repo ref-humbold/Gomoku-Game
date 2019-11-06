@@ -13,9 +13,9 @@ type direction = Row of int | Column of int | Sum of int * int | Diff of int * i
 
 type hole = Five of (int * int) | Four of (int * int)
 
-type move_info = {mutable queue: move list; mutable last: int * int}
+type move_info = {mutable queue : move list; mutable last : int * int}
 
-let moving = {queue= [Any]; last= (0, 0)}
+let moving = {queue = [Any]; last = (0, 0)}
 
 let get_row_dim n gameboard = (get_row n gameboard, Row n)
 
@@ -173,8 +173,7 @@ let check_board_situation player gameboard =
   count_nums @@ List.concat
   @@ List.map (check [])
   @@ List.concat
-    [ get_rows gameboard; get_columns gameboard; get_sum_diags gameboard;
-      get_diff_diags gameboard ]
+    [get_rows gameboard; get_columns gameboard; get_sum_diags gameboard; get_diff_diags gameboard]
 
 let make_multiple player situation =
   let sit_points =

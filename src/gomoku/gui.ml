@@ -1,7 +1,7 @@
 type button =
-  | Btn of {xc: int; yc: int; width: int; height: int; label: string; colour: Graphics.color}
+  | Btn of {xc : int; yc : int; width : int; height : int; label : string; colour : Graphics.color}
 
-type text = Txt of {xc: int; yc: int; label: string; colour: Graphics.color}
+type text = Txt of {xc : int; yc : int; label : string; colour : Graphics.color}
 
 let window_size = 800
 
@@ -29,16 +29,14 @@ let clear_window colour =
 
 let draw_text (Txt {label; colour; _} as text) =
   let x, y = center_text text in
-  Graphics.set_color colour ;
-  Graphics.moveto x y ;
-  Graphics.draw_string label
+  Graphics.set_color colour ; Graphics.moveto x y ; Graphics.draw_string label
 
 let draw_texts lst = List.iter draw_text lst
 
 let draw_button (Btn {xc; yc; width; height; label; colour}) =
   Graphics.set_color colour ;
   Graphics.fill_rect (xc - (width / 2)) (yc - (height / 2)) width height ;
-  draw_text @@ Txt {xc; yc; label; colour= Graphics.black}
+  draw_text @@ Txt {xc; yc; label; colour = Graphics.black}
 
 let draw_buttons lst = List.iter draw_button lst
 

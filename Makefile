@@ -23,5 +23,5 @@ compile :
 	ln -sfn ../$(BUILD_BIN)/$(BIN_DIST) $(BIN)/$(BIN_DIST)
 
 format :
-	dune build @fmt --auto-promote 2> /dev/null ; [ $$? -le 1 ]
-	for F in $$(find $(SRC) -regextype egrep -regex '.+\.mli?') ; do ocp-indent -i $$F ; done
+	for F in $$(find $(SRC) -regextype egrep -regex '.+\.mli?') ;\
+	  do ocamlformat -i $$F ; ocp-indent -i $$F ; done

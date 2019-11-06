@@ -1,3 +1,2 @@
-(lang dune 1.2)
+(lang dune 1.11)
 (name gomoku)
-(using fmt 1.1)

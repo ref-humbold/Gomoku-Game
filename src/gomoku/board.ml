@@ -2,7 +2,7 @@ type player = Human | Comp
 
 type field = Free | Border | Stone of player
 
-type gameboard = {fields: field list list; size: int}
+type gameboard = {fields : field list list; size : int}
 
 exception Incorrect_gameboard of string
 
@@ -17,7 +17,7 @@ let create_board size =
     else create_row n (m + 1) (Free :: acc)
   in
   let rec create n acc = if n = size + 2 then acc else create (n + 1) (create_row n 0 [] :: acc) in
-  {fields= create 0 []; size}
+  {fields = create 0 []; size}
 
 let get_field (n, m) {fields; _} = List.nth (List.nth fields n) m
 
@@ -58,7 +58,7 @@ let set_move (n, m) player gameboard =
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
     | row :: rows -> if i = 0 then set_col m row :: rows else row :: set_row (i - 1) rows
   in
-  {gameboard with fields= set_row n gameboard.fields}
+  {gameboard with fields = set_row n gameboard.fields}
 
 let opponent player =
   match player with

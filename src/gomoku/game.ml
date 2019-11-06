@@ -40,14 +40,9 @@ let check_winner gameboard player (n, m) =
   else None
 
 let start_game size =
-  Random.self_init () ;
-  Comp_player.clear () ;
-  Game_gui.display size ;
-  create_board size
+  Random.self_init () ; Comp_player.clear () ; Game_gui.display size ; create_board size
 
-let end_game (winner, moves) =
-  Stat.update_data winner moves ;
-  Game_gui.return winner
+let end_game (winner, moves) = Stat.update_data winner moves ; Game_gui.return winner
 
 let play_game gameboard =
   let rec turn gameboard' mvs last_pos player =
@@ -58,8 +53,8 @@ let play_game gameboard =
     in
     let new_moves =
       match player with
-      | Human -> Stat.{mvs with human_mv= mvs.human_mv + 1}
-      | Comp -> Stat.{mvs with comp_mv= mvs.comp_mv + 1}
+      | Human -> Stat.{mvs with human_mv = mvs.human_mv + 1}
+      | Comp -> Stat.{mvs with comp_mv = mvs.comp_mv + 1}
     in
     let new_gameboard = set_move move_pos player gameboard' in
     Game_gui.draw_stone gameboard.size player move_pos ;
@@ -67,7 +62,7 @@ let play_game gameboard =
     | None -> turn new_gameboard new_moves move_pos @@ opponent player
     | Some player -> (player, new_moves)
   in
-  turn gameboard Stat.{human_mv= 0; comp_mv= 0} (0, 0) Human
+  turn gameboard Stat.{human_mv = 0; comp_mv = 0} (0, 0) Human
 
 let run size =
   let gameboard = start_game size in
