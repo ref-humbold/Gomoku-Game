@@ -1,3 +1,5 @@
+type grid = GP of int * int
+
 type player = Human | Comp
 
 type field = Free | Border | Stone of player
@@ -9,21 +11,23 @@ exception Incorrect_gameboard of string
 exception Incorrect_player of string
 
 let create_board size =
-  let rec create_row n m acc =
-    if m = size + 2
+  let rec create_row rn cn acc =
+    if cn = size + 2
     then acc
-    else if n = 0 || n = size + 1 || m = 0 || m = size + 1
-    then create_row n (m + 1) (Border :: acc)
-    else create_row n (m + 1) (Free :: acc)
+    else if rn = 0 || rn = size + 1 || cn = 0 || cn = size + 1
+    then create_row rn (cn + 1) (Border :: acc)
+    else create_row rn (cn + 1) (Free :: acc)
   in
-  let rec create n acc = if n = size + 2 then acc else create (n + 1) (create_row n 0 [] :: acc) in
+  let rec create rn acc =
+    if rn = size + 2 then acc else create (rn + 1) (create_row rn 0 [] :: acc)
+  in
   {fields = create 0 []; size}
 
-let get_field (n, m) {fields; _} = List.nth (List.nth fields n) m
+let get_field (GP (rn, cn)) {fields; _} = List.nth (List.nth fields rn) rm
 
-let get_row n {fields; _} = List.nth fields n
+let get_row rn {fields; _} = List.nth fields rn
 
-let get_column m {fields; _} = List.map (fun lst -> List.nth lst m) fields
+let get_column cn {fields; _} = List.map (fun lst -> List.nth lst cn) fields
 
 let get_sum_diag sum {fields; size} =
   let rec extract i fields' acc =
@@ -47,18 +51,18 @@ let get_diff_diag diff {fields; size} =
   in
   extract 0 fields []
 
-let set_move (n, m) player gameboard =
-  let rec set_col i row' =
+let set_move (GP (rn, cn)) player gameboard =
+  let rec set_col j row' =
     match row' with
+    | col :: cols -> if j = 0 then Stone player :: cols else col :: set_col (j - 1) cols
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ column"
-    | col :: cols -> if i = 0 then Stone player :: cols else col :: set_col (i - 1) cols
   in
   let rec set_row i fields' =
     match fields' with
+    | row :: rows -> if i = 0 then set_col cn row :: rows else row :: set_row (i - 1) rows
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
-    | row :: rows -> if i = 0 then set_col m row :: rows else row :: set_row (i - 1) rows
   in
-  {gameboard with fields = set_row n gameboard.fields}
+  {gameboard with fields = set_row rn gameboard.fields}
 
 let opponent player =
   match player with

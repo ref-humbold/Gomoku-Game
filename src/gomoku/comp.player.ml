@@ -1,7 +1,5 @@
 open Board
 
-type place = P of int * int
-
 type move =
   | Comp_five of place
   | Human_five of place
@@ -17,4 +15,4 @@ type win_place = Five of place | Four of place
 
 type move_info = {mutable queue : move list; mutable last : place}
 
-let moves = {queue = [Any]; last = P 0 0}
+let moves = {queue = [Any]; last = GP (0, 0)}

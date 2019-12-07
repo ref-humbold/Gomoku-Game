@@ -1,8 +1,8 @@
 open Board
 
 let rec choose_stone size =
-  let n, m = Game_gui.grid_of_point size @@ Gui.mouse_click () in
-  if n >= 1 && n <= size && m >= 1 && m <= size then (n, m) else choose_stone size
+  let rn, cn = Game_gui.grid_of_point size @@ Gui.mouse_click () in
+  if rn >= 1 && rn <= size && cn >= 1 && cn <= size then GP (rn, cn) else choose_stone size
 
 let rec move gameboard =
   let pos = choose_stone gameboard.size in

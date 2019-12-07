@@ -34,10 +34,10 @@ let grid_of_point size (x, y) =
   let conv v = (v - begline + (step / 2)) / step in
   (conv y, conv x)
 
-let point_of_grid size (n, m) =
+let point_of_grid size (GP (rn, cn)) =
   let begline, _ = get_borders size in
   let conv v = begline + (v * step) in
-  (conv m, conv n)
+  (conv cn, conv rn)
 
 let display size =
   let pbeg, pend = get_borders size in

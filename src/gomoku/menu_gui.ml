@@ -27,7 +27,7 @@ let texts =
     Gui.Txt
       { xc = Gui.ratio 1 2;
         yc = Gui.ratio 1 8;
-        label = "(C) 2018 RAFAL KALETA, MIT LICENSE";
+        label = "(C) 2019 RAFAL KALETA, MIT LICENSE";
         colour = Graphics.black } ]
 
 let display () = Gui.clear_window Graphics.blue ; Gui.draw_buttons buttons ; Gui.draw_texts texts
