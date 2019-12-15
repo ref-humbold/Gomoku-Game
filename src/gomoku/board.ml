@@ -36,24 +36,26 @@ let get_row rn {fields; _} = List.nth fields rn
 let get_column cn {fields; _} = List.map (fun lst -> List.nth lst cn) fields
 
 let get_sum_diag sum {fields; size} =
-  let rec extract i fields' acc =
+  let rec extract rn fields' acc =
     match fields' with
-    | [] -> List.rev acc
     | row :: rows ->
-      if sum - i < 0 || sum - i > size + 1
-      then extract (i + 1) rows acc
-      else extract (i + 1) rows (List.nth row (sum - i) :: acc)
+      let cn = sum - rn in
+      if cn < 0 || cn > size + 1
+      then extract (rn + 1) rows acc
+      else extract (rn + 1) rows (List.nth row cn :: acc)
+    | [] -> List.rev acc
   in
   extract 0 fields []
 
 let get_diff_diag diff {fields; size} =
-  let rec extract i fields' acc =
+  let rec extract rn fields' acc =
     match fields' with
-    | [] -> List.rev acc
     | row :: rows ->
-      if i - diff < 0 || i - diff > size + 1
-      then extract (i + 1) rows acc
-      else extract (i + 1) rows (List.nth row (i - diff) :: acc)
+      let cn = rn - diff in
+      if cn < 0 || cn > size + 1
+      then extract (rn + 1) rows acc
+      else extract (rn + 1) rows (List.nth row cn :: acc)
+    | [] -> List.rev acc
   in
   extract 0 fields []
 
