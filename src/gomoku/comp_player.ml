@@ -9,14 +9,6 @@ type move =
   | Human_four of place
   | Heuristic
 
-type direction =
-  | Row of int * field list
-  | Column of int * field list
-  | Sum of int * field list
-  | Diff of int * field list
-
-type win_line = Five of place * direction | Four of place * direction
-
 type move_info = {mutable queue : move list; mutable last : place}
 
 let moves = {queue = [Heuristic]; last = GP (0, 0)}

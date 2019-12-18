@@ -6,7 +6,16 @@ type direction =
   | Sum of int * field list
   | Diff of int * field list
 
-type win_line = Five of place * direction | Four of place * direction
+type hole = Five of place * direction | Four of place * direction | Three of place * direction
+
+let count cmp lst =
+  let rec cnt n lst =
+    match lst with
+    | x1 :: (x2 :: _ as xs) -> if x1 = x2 then cnt (n + 1) xs else (x1, n) :: cnt 1 xs
+    | [x] -> [(x, n)]
+    | [] -> []
+  in
+  cnt 1 @@ List.sort cmp lst
 
 let get_row_dim rn gameboard = Row (rn, get_row rn gameboard)
 
@@ -84,6 +93,15 @@ let analyze_winning player pos gameboard =
     | Stone p1 :: Stone p2 :: Stone p3 :: Free :: ps when player = p1 && p1 = p2 && p2 = p3 ->
       let pos = extract_pos dir (i + 3) in
       check dir (i + 4) ps (Four (pos, dir) :: acc)
+    | Free :: Stone p1 :: Stone p2 :: ps when player = p1 && p1 = p2 ->
+      let pos = extract_pos dir i in
+      check dir (i + 3) ps (Three (pos, dir) :: acc)
+    | Stone p1 :: Free :: Stone p2 :: ps when player = p1 && p1 = p2 ->
+      let pos = extract_pos dir (i + 1) in
+      check dir (i + 3) ps (Three (pos, dir) :: acc)
+    | Stone p1 :: Stone p2 :: Free :: ps when player = p1 && p1 = p2 ->
+      let pos = extract_pos dir (i + 2) in
+      check dir (i + 3) ps (Three (pos, dir) :: acc)
     | _ :: ps -> check dir (i + 1) ps acc
     | [] -> acc
   in
@@ -115,12 +133,4 @@ let check_lines player gameboard =
     | Free :: ps | Border :: ps | Stone _ :: ps -> check acc ps
     | [] -> acc
   in
-  let rec cnt num lst =
-    match lst with
-    | x1 :: (x2 :: _ as xt) -> if x1 = x2 then cnt (num + 1) xt else (x1, num) :: cnt 1 xt
-    | [x] -> [(x, num)]
-    | [] -> []
-  in
-  let all_lines = List.concat @@ List.map (check []) @@ get_all_lines gameboard in
-  let count lst = List.sort compare @@ cnt 1 @@ List.sort compare lst in
-  count all_lines
+  count compare @@ List.concat @@ List.map (check []) @@ get_all_lines gameboard
