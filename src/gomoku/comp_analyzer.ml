@@ -6,7 +6,7 @@ type direction =
   | Sum of int * field list
   | Diff of int * field list
 
-type hole = Five of place * direction | Four of place * direction | Three of place * direction
+type hole = Hole of {place : place; dirs : (int * direction) list}
 
 let count cmp lst =
   let rec cnt n lst =
@@ -64,44 +64,44 @@ let analyze_winning player pos gameboard =
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
       let pos = extract_pos dir i in
-      check dir (i + 5) ps (Five (pos, dir) :: acc)
+      check dir (i + 5) ps ((pos, 5, dir) :: acc)
     | Stone p1 :: Free :: Stone p2 :: Stone p3 :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
       let pos = extract_pos dir (i + 1) in
-      check dir (i + 5) ps (Five (pos, dir) :: acc)
+      check dir (i + 5) ps ((pos, 5, dir) :: acc)
     | Stone p1 :: Stone p2 :: Free :: Stone p3 :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
       let pos = extract_pos dir (i + 2) in
-      check dir (i + 5) ps (Five (pos, dir) :: acc)
+      check dir (i + 5) ps ((pos, 5, dir) :: acc)
     | Stone p1 :: Stone p2 :: Stone p3 :: Free :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
       let pos = extract_pos dir (i + 3) in
-      check dir (i + 5) ps (Five (pos, dir) :: acc)
+      check dir (i + 5) ps ((pos, 5, dir) :: acc)
     | Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Free :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
       let pos = extract_pos dir (i + 4) in
-      check dir (i + 5) ps (Five (pos, dir) :: acc)
+      check dir (i + 5) ps ((pos, 5, dir) :: acc)
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 ->
       let pos = extract_pos dir i in
-      check dir (i + 4) ps (Four (pos, dir) :: acc)
+      check dir (i + 4) ps ((pos, 4, dir) :: acc)
     | Stone p1 :: Free :: Stone p2 :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 ->
       let pos = extract_pos dir (i + 1) in
-      check dir (i + 4) ps (Four (pos, dir) :: acc)
+      check dir (i + 4) ps ((pos, 4, dir) :: acc)
     | Stone p1 :: Stone p2 :: Free :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 ->
       let pos = extract_pos dir (i + 2) in
-      check dir (i + 4) ps (Four (pos, dir) :: acc)
+      check dir (i + 4) ps ((pos, 4, dir) :: acc)
     | Stone p1 :: Stone p2 :: Stone p3 :: Free :: ps when player = p1 && p1 = p2 && p2 = p3 ->
       let pos = extract_pos dir (i + 3) in
-      check dir (i + 4) ps (Four (pos, dir) :: acc)
+      check dir (i + 4) ps ((pos, 4, dir) :: acc)
     | Free :: Stone p1 :: Stone p2 :: ps when player = p1 && p1 = p2 ->
       let pos = extract_pos dir i in
-      check dir (i + 3) ps (Three (pos, dir) :: acc)
+      check dir (i + 3) ps ((pos, 3, dir) :: acc)
     | Stone p1 :: Free :: Stone p2 :: ps when player = p1 && p1 = p2 ->
       let pos = extract_pos dir (i + 1) in
-      check dir (i + 3) ps (Three (pos, dir) :: acc)
+      check dir (i + 3) ps ((pos, 3, dir) :: acc)
     | Stone p1 :: Stone p2 :: Free :: ps when player = p1 && p1 = p2 ->
       let pos = extract_pos dir (i + 2) in
-      check dir (i + 3) ps (Three (pos, dir) :: acc)
+      check dir (i + 3) ps ((pos, 3, dir) :: acc)
     | _ :: ps -> check dir (i + 1) ps acc
     | [] -> acc
   in
@@ -116,7 +116,21 @@ let analyze_winning player pos gameboard =
       let i = max 0 diff in
       check dir i diag []
   in
-  List.concat @@ List.map check_direction @@ get_dirs_at_pos pos gameboard
+  let make_holes lst =
+    let rec make_holes' dirs lst =
+      match lst with
+      | (p1, n1, d1) :: ((p2, n2, d2) :: _ as xs) ->
+        if p1 = p2
+        then make_holes' ((n1, d1) :: dirs) xs
+        else (
+          match dirs with
+          | [(3, _)] -> make_holes' [] xs
+          | _ -> Hole (p1, dirs) :: make_holes' [] xs )
+      | [] -> []
+    in
+    make_holes' [] @@ List.sort compare lst
+  in
+  make_holes @@ List.concat @@ List.map check_direction @@ get_dirs_at_pos pos gameboard
 
 let check_lines player gameboard =
   let rec check acc ln =
