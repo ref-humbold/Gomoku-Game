@@ -1,14 +1,5 @@
 open Board
 
-type move =
-  | Comp_five of place
-  | Human_five of place
-  | Comp_mult_three of place
-  | Human_mult_three of place
-  | Comp_four of place
-  | Human_four of place
-  | Heuristic
-
 type direction =
   | Row of int * field list
   | Column of int * field list
@@ -16,14 +7,6 @@ type direction =
   | Diff of int * field list
 
 type win_line = Five of place * direction | Four of place * direction
-
-type move_info = {mutable queue : move list; mutable last : place}
-
-let moves = {queue = [Heuristic]; last = GP (0, 0)}
-
-let clear_moves () =
-  moves.queue <- [Heuristic] ;
-  moves.last <- GP (0, 0)
 
 let get_row_dim rn gameboard = Row (rn, get_row rn gameboard)
 
@@ -59,38 +42,49 @@ let get_all_lines gameboard =
   List.concat
     [get_rows gameboard; get_columns gameboard; get_sum_diags gameboard; get_diff_diags gameboard]
 
-(* Analyze current board situation *)
-
-let analyze_position player pos gameboard =
+let analyze_winning player pos gameboard =
   let extract_pos dir i =
     match dir with
-    | Row (rn, _) -> ()
-    | Column (cn, _) -> ()
-    | Sum (sum, _) -> ()
-    | Diff (diff, _) -> ()
+    | Row (rn, _) -> GP (rn, i)
+    | Column (cn, _) -> GP (i, cn)
+    | Sum (sum, _) -> GP (sum, sum - i)
+    | Diff (diff, _) -> GP (i, i - diff)
   in
   let rec check dir i lst acc =
     match lst with
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-      ()
+      let pos = extract_pos dir i in
+      check dir (i + 5) ps (Five (pos, dir) :: acc)
     | Stone p1 :: Free :: Stone p2 :: Stone p3 :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-      ()
+      let pos = extract_pos dir (i + 1) in
+      check dir (i + 5) ps (Five (pos, dir) :: acc)
     | Stone p1 :: Stone p2 :: Free :: Stone p3 :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-      ()
+      let pos = extract_pos dir (i + 2) in
+      check dir (i + 5) ps (Five (pos, dir) :: acc)
     | Stone p1 :: Stone p2 :: Stone p3 :: Free :: Stone p4 :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-      ()
+      let pos = extract_pos dir (i + 3) in
+      check dir (i + 5) ps (Five (pos, dir) :: acc)
     | Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Free :: ps
       when player = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-      ()
-    | Free :: Stone p1 :: Stone p2 :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 -> ()
-    | Stone p1 :: Free :: Stone p2 :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 -> ()
-    | Stone p1 :: Stone p2 :: Free :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 -> ()
-    | Stone p1 :: Stone p2 :: Stone p3 :: Free :: ps when player = p1 && p1 = p2 && p2 = p3 -> ()
-    | _ :: ps -> ()
+      let pos = extract_pos dir (i + 4) in
+      check dir (i + 5) ps (Five (pos, dir) :: acc)
+    | Free :: Stone p1 :: Stone p2 :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 ->
+      let pos = extract_pos dir i in
+      check dir (i + 4) ps (Four (pos, dir) :: acc)
+    | Stone p1 :: Free :: Stone p2 :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 ->
+      let pos = extract_pos dir (i + 1) in
+      check dir (i + 4) ps (Four (pos, dir) :: acc)
+    | Stone p1 :: Stone p2 :: Free :: Stone p3 :: ps when player = p1 && p1 = p2 && p2 = p3 ->
+      let pos = extract_pos dir (i + 2) in
+      check dir (i + 4) ps (Four (pos, dir) :: acc)
+    | Stone p1 :: Stone p2 :: Stone p3 :: Free :: ps when player = p1 && p1 = p2 && p2 = p3 ->
+      let pos = extract_pos dir (i + 3) in
+      check dir (i + 4) ps (Four (pos, dir) :: acc)
+    | _ :: ps -> check dir (i + 1) ps acc
     | [] -> acc
   in
   let check_direction dir =
@@ -130,36 +124,3 @@ let check_lines player gameboard =
   let all_lines = List.concat @@ List.map (check []) @@ get_all_lines gameboard in
   let count lst = List.sort compare @@ cnt 1 @@ List.sort compare lst in
   count all_lines
-
-(* Make heuristic move *)
-
-let extract_frees gameboard =
-  let neighbours rn cn =
-    [ get_field (GP (rn - 1, cn - 1)) gameboard; get_field (GP (rn - 1, cn)) gameboard;
-      get_field (GP (rn - 1, cn + 1)) gameboard; get_field (GP (rn, cn - 1)) gameboard;
-      get_field (GP (rn - 1, cn + 1)) gameboard; get_field (GP (rn + 1, cn - 1)) gameboard;
-      get_field (GP (rn + 1, cn)) gameboard; get_field (GP (rn + 1, cn + 1)) gameboard ]
-  in
-  let check_free field =
-    match field with
-    | Free -> true
-    | Border | Stone _ -> false
-  in
-  let rec extract_row rn cn row =
-    match row with
-    | Stone _ :: fds ->
-      if cn >= 1 && cn <= gameboard.size && (List.exists check_free @@ neighbours cn cm)
-      then GP (rn, cn) :: extract_row rn (cn + 1) fds
-      else extract_row rn (cn + 1) fds
-    | Free :: fds | Border :: fds -> extract_row rn (cn + 1) fds
-    | [] -> []
-  in
-  let rec extract rn fields =
-    match fields' with
-    | row :: rows ->
-      if rn >= 1 && rn <= gameboard.size
-      then extract_row rn 0 row :: extract (rn + 1) rows
-      else extract (n + 1) rows
-    | [] -> []
-  in
-  List.concat @@ extract 0 gameboard.fields
