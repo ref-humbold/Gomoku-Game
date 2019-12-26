@@ -1,9 +1,10 @@
-BUILD_BIN = _build/install/default/bin
+BUILD_SRC = _build/default/src
+BUILD_EXEC = main.exe
 
 BIN = bin
 SRC = src
 
-BIN_DIST = gomoku
+EXEC_DIST = gomoku
 
 .PHONY : all build clean compile format refresh test
 
@@ -20,7 +21,7 @@ build : format all
 compile :
 	dune build
 	mkdir -p $(BIN)
-	ln -sfn ../$(BUILD_BIN)/$(BIN_DIST) $(BIN)/$(BIN_DIST)
+	cp $(BUILD_SRC)/$(BUILD_EXEC) $(BIN)/$(EXEC_DIST)
 
 test :
 	dune runtest

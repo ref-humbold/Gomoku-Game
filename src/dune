@@ -1,6 +1,5 @@
 (executable
   (name main)
-  (public_name gomoku)
   (libraries graphics gomokuLib)
   (modes native)
 )
