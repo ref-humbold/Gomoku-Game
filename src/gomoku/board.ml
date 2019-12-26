@@ -29,7 +29,7 @@ let create_board size =
   in
   {fields = create 0 []; size}
 
-let get_field (GP (rn, cn)) {fields; _} = List.nth (List.nth fields rn) rm
+let get_field (GP (rn, cn)) {fields; _} = List.nth (List.nth fields rn) cn
 
 let get_row rn {fields; _} = List.nth fields rn
 

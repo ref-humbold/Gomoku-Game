@@ -1,15 +1,15 @@
 open Board
 
 type move =
-  | Comp_five of place
-  | Human_five of place
-  | Comp_mult_three of place
-  | Human_mult_three of place
-  | Comp_four of place
-  | Human_four of place
+  | Comp_five of grid
+  | Human_five of grid
+  | Comp_mult_three of grid
+  | Human_mult_three of grid
+  | Comp_four of grid
+  | Human_four of grid
   | Heuristic
 
-type move_info = {mutable queue : move list; mutable last : place}
+type move_info = {mutable queue : move list; mutable last : grid}
 
 let moves = {queue = [Heuristic]; last = GP (0, 0)}
 
@@ -23,29 +23,29 @@ let extract_frees gameboard =
   let neighbours rn cn =
     [ get_field (GP (rn - 1, cn - 1)) gameboard; get_field (GP (rn - 1, cn)) gameboard;
       get_field (GP (rn - 1, cn + 1)) gameboard; get_field (GP (rn, cn - 1)) gameboard;
-      get_field (GP (rn - 1, cn + 1)) gameboard; get_field (GP (rn + 1, cn - 1)) gameboard;
+      get_field (GP (rn, cn + 1)) gameboard; get_field (GP (rn + 1, cn - 1)) gameboard;
       get_field (GP (rn + 1, cn)) gameboard; get_field (GP (rn + 1, cn + 1)) gameboard ]
   in
-  let check_free field =
+  let check_stone field =
     match field with
-    | Free -> true
-    | Border | Stone _ -> false
+    | Stone _ -> true
+    | Border | Free -> false
   in
   let rec extract_row rn cn row =
     match row with
-    | Stone _ :: fds ->
-      if cn >= 1 && cn <= gameboard.size && (List.exists check_free @@ neighbours cn cm)
+    | Free :: fds ->
+      if cn >= 1 && cn <= gameboard.size && (List.exists check_stone @@ neighbours rn cn)
       then GP (rn, cn) :: extract_row rn (cn + 1) fds
       else extract_row rn (cn + 1) fds
-    | Free :: fds | Border :: fds -> extract_row rn (cn + 1) fds
+    | Stone _ :: fds | Border :: fds -> extract_row rn (cn + 1) fds
     | [] -> []
   in
   let rec extract rn fields =
-    match fields' with
+    match fields with
     | row :: rows ->
       if rn >= 1 && rn <= gameboard.size
       then extract_row rn 0 row :: extract (rn + 1) rows
-      else extract (n + 1) rows
+      else extract (rn + 1) rows
     | [] -> []
   in
-  List.concat @@ extract 0 gameboard.fields
+  List.sort_uniq compare @@ List.concat @@ extract 0 gameboard.fields

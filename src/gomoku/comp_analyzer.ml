@@ -6,7 +6,7 @@ type direction =
   | Sum of int * field list
   | Diff of int * field list
 
-type hole = Hole of {place : place; dirs : (int * direction) list}
+type hole = Hole of {place : grid; dirs : (int * direction) list}
 
 let count cmp lst =
   let rec cnt n lst =
@@ -102,13 +102,13 @@ let analyze_winning player pos gameboard =
     | Stone p1 :: Stone p2 :: Free :: ps when player = p1 && p1 = p2 ->
       let pos = extract_pos dir (i + 2) in
       check dir (i + 3) ps ((pos, 3, dir) :: acc)
-    | _ :: ps -> check dir (i + 1) ps acc
+    | Free :: ps | Border :: ps | Stone _ :: ps -> check dir (i + 1) ps acc
     | [] -> acc
   in
   let check_direction dir =
     match dir with
-    | Row (rn, row) -> check dir 0 row []
-    | Column (cn, col) -> check dir 0 col []
+    | Row (_, row) -> check dir 0 row []
+    | Column (_, col) -> check dir 0 col []
     | Sum (sum, diag) ->
       let i = max 0 @@ (sum - gameboard.size - 1) in
       check dir i diag []
@@ -119,13 +119,17 @@ let analyze_winning player pos gameboard =
   let make_holes lst =
     let rec make_holes' dirs lst =
       match lst with
-      | (p1, n1, d1) :: ((p2, n2, d2) :: _ as xs) ->
+      | (p1, n1, d1) :: ((p2, _, _) :: _ as xs) ->
         if p1 = p2
         then make_holes' ((n1, d1) :: dirs) xs
         else (
           match dirs with
           | [(3, _)] -> make_holes' [] xs
-          | _ -> Hole (p1, dirs) :: make_holes' [] xs )
+          | _ -> Hole {place = p1; dirs} :: make_holes' [] xs )
+      | [(p, _, _)] ->
+        ( match dirs with
+          | [(3, _)] -> []
+          | _ -> [Hole {place = p; dirs}] )
       | [] -> []
     in
     make_holes' [] @@ List.sort compare lst

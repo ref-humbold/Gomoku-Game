@@ -1,12 +1,14 @@
 (executable
- (name main)
- (public_name gomoku)
- (libraries graphics)
- (modes native))
+  (name main)
+  (public_name gomoku)
+  (libraries graphics gomokuLib)
+  (modes native)
+)
 
 (env
- (dev
-  (flags
-   (:standard -warn-error -A -w +A))))
-
-(include_subdirs unqualified)
+  (dev
+    (flags
+      (:standard -warn-error -A -w +A)
+    )
+  )
+)
