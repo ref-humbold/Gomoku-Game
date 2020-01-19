@@ -1,4 +1,7 @@
 # Gomoku-Game
+![Release](https://img.shields.io/github/v/release/ref-humbold/Gomoku-Game?style=plastic)
+![License](https://img.shields.io/github/license/ref-humbold/Gomoku-Game?style=plastic)
+
 Single-player gomoku game in Ocaml
 
 ## About
