@@ -15,19 +15,19 @@ LET'S PLAY GOMOKU!
 
 Build process:
 + Linux-based operating system *((Debian testing))*
-+ [OCaml](https://ocaml.org) *((4.08.1))*
-+ [Dune](https://dune.build) *((2.0.0))*
-+ [GNU Make](https://www.gnu.org/software/make) *((4.2.1))*
++ [OCaml](https://ocaml.org) *((4.08.+))*
++ [Dune](https://dune.build) *((2.1.+))*
++ [GNU Make](https://www.gnu.org/software/make) *((4.2.+))*
 
 Additional libraries:
-+ Graphics *((4.08.1))*
++ Graphics *((4.08.+))*
 
-Automated formatting by:
+### Unit testing
++ OUnit2 *((2.2.+))*
+
+### Automated formatting
 + Ocamlformat *((0.12))*
-+ Ocp-indent *((1.8.1))*
-
-Unit test by
-+ OUnit2 *((2.2.1))*
++ Ocp-indent *((1.8.+))*
 
 -----
 
