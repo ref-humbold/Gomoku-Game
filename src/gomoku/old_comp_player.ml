@@ -297,19 +297,19 @@ let move (GP (hr, hc)) gameboard =
       ( match List.hd moving.queue with
         | Any -> heuristic_move gameboard
         | Comp_five pos
-        |Human_multiple pos
-        |Human_five pos
-        |Comp_multiple pos
-        |Comp_four pos
-        |Human_four pos ->
+        | Human_multiple pos
+        | Human_five pos
+        | Comp_multiple pos
+        | Comp_four pos
+        | Human_four pos ->
           moving.queue <- List.tl moving.queue ;
           pos )
     | Comp_five pos
-    |Human_multiple pos
-    |Human_five pos
-    |Comp_multiple pos
-    |Comp_four pos
-    |Human_four pos ->
+    | Human_multiple pos
+    | Human_five pos
+    | Comp_multiple pos
+    | Comp_four pos
+    | Human_four pos ->
       let non_any = List.filter (fun mv -> mv <> Any) analyzed in
       moving.queue <- List.rev_append non_any moving.queue ;
       pos

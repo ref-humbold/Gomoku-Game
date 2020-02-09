@@ -3,9 +3,8 @@ BUILD_EXEC = main.exe
 
 BIN = bin
 SRC = src
+TEST = test
 
-SOURCES = $(wildcard $(SRC)/*.{ml,mli})
-TEST_FILES = $(wildcard $(TEST)/*.{ml,mli})
 EXECUTABLE = gomoku
 
 .PHONY : all build clean compile dirs format refresh test
@@ -31,5 +30,5 @@ test :
 	dune runtest
 
 format :
-	for F in $(SOURCES) ; do ocamlformat -i $$F ; ocp-indent -i $$F ; done
-	for F in $(TEST_FILES) ; do ocamlformat -i $$F ; ocp-indent -i $$F ; done
+	find $(SRC) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
+	find $(TEST) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
