@@ -13,28 +13,29 @@ LET'S PLAY GOMOKU!
 ### Standard build & run
 > *versions last used by the author are in double parentheses and italic*
 
-Build process:
-+ Linux-based operating system *((Debian testing))*
-+ [OCaml](https://ocaml.org) *((4.08.+))* \
-  \[APT package `ocaml`\]
-+ [Dune](https://dune.build) *((2.3.+))* \
-  \[OPAM package `dune`\]
-+ [GNU Make](https://www.gnu.org/software/make) *((4.2.+))* \
-  \[APT package `make`\]
+General:
++ Linux-based operating system \
+  *((Debian testing))*
++ [OCaml](https://ocaml.org) \
+  *((APT package `ocaml`, 4.08.+))*
++ [Dune](https://dune.build) \
+  *((OPAM package `dune`, 2.3.+))*
++ [GNU Make](https://www.gnu.org/software/make) \
+  *((APT package `make`, 4.2.+))*
 
 Additional libraries:
-+ Graphics *((4.08.+))* \
-  \[OPAM package `graphics`\]
++ Graphics \
+  *((OPAM package `graphics`, 4.08.+))*
 
 ### Unit testing
-+ OUnit2 *((2.2.+))* \
-  \[OPAM package `ounit2`\]
++ OUnit2 \
+  *((OPAM package `ounit2`, 2.2.+))*
 
 ### Automated formatting
-+ Ocamlformat *((0.13))* \
-  \[OPAM package `ocamlformat`\]
-+ Ocp-indent *((1.8.+))* \
-  \[OPAM package `ocp-indent`\]
++ Ocamlformat \
+  *((OPAM package `ocamlformat`, 0.13))*
++ Ocp-indent \
+  *((OPAM package `ocp-indent`, 1.8.+))*
 
 -----
 
@@ -43,11 +44,12 @@ Gomoku can be built using **Dune** with help of **GNU Make**.
 
 Possible Make targets are:
 + `make`, `make all` - compile source files & link executable & run unit tests
-+ `make compile` - compile source files & link executable
 + `make build` - format source files & compile source files & link executable & run unit tests
++ `make compile` - compile source files & link executable
++ `make test` - run unit tests
++ `make format` - format source files
 + `make clean` - remove additional build files
 + `make refresh` - remove additional build files & compile source files & link executable & run unit tests
-+ `make test` - run unit tests
 
 ## How to run?
 Gomoku can be run directly using the executable file in the `bin` directory:

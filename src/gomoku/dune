@@ -1,3 +1,5 @@
 (library
   (name gomokuLib)
 )
+
+(include_subdirs unqualified)

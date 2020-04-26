@@ -2,10 +2,7 @@
 open OUnit2
 open GomokuLib.Board
 open GomokuLib.Comp_player
-
-let print_grid_list lst =
-  let grid (GP (rn, cn)) = "(" ^ string_of_int rn ^ ", " ^ string_of_int cn ^ ")" in
-  "[" ^ String.concat "; " (List.map grid lst) ^ "]"
+open Utils
 
 (* extract_frees *)
 
@@ -14,7 +11,7 @@ let extract_frees_When_empty_gameboard_Then_empty_list =
   >:: fun _ ->
     let gameboard = create_board 5 in
     let result = extract_frees gameboard in
-    assert_equal ~printer:print_grid_list [] result
+    assert_equal ~printer:Printers.print_grid_list [] result
 
 let extract_frees_When_not_empty_gameboard_Then_sorted_unique_places =
   "Extract free neighbouring positions from non-empty gameboard"
@@ -22,7 +19,7 @@ let extract_frees_When_not_empty_gameboard_Then_sorted_unique_places =
     let gameboard = set_move (GP (3, 3)) Comp @@ set_move (GP (3, 2)) Human @@ create_board 5 in
     let result = extract_frees gameboard in
     assert_equal
-      ~printer:print_grid_list
+      ~printer:Printers.print_grid_list
       [ GP (2, 1); GP (2, 2); GP (2, 3); GP (2, 4); GP (3, 1); GP (3, 4); GP (4, 1); GP (4, 2);
         GP (4, 3); GP (4, 4) ]
       result
