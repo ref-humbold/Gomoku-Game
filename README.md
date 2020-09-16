@@ -19,9 +19,9 @@ General:
 + [OCaml](https://ocaml.org) \
   *((APT package `ocaml`, 4.08.+))*
 + [Dune](https://dune.build) \
-  *((OPAM package `dune`, 2.3.+))*
+  *((OPAM package `dune`, 2.7.+))*
 + [GNU Make](https://www.gnu.org/software/make) \
-  *((APT package `make`, 4.2.+))*
+  *((APT package `make`, 4.3.+))*
 
 Additional libraries:
 + Graphics \
@@ -33,7 +33,7 @@ Additional libraries:
 
 ### Automated formatting
 + Ocamlformat \
-  *((OPAM package `ocamlformat`, 0.13))*
+  *((OPAM package `ocamlformat`, 0.15.+))*
 + Ocp-indent \
   *((OPAM package `ocp-indent`, 1.8.+))*
 
