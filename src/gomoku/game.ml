@@ -1,7 +1,7 @@
 open Board
 
 let check_winner gameboard player (GP (rn, cn)) =
-  let rec check lst =
+  let rec check_five lst =
     match lst with
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Free :: _
       when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
@@ -30,10 +30,10 @@ let check_winner gameboard player (GP (rn, cn)) =
     | Border :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Border :: _
       when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
       true
-    | Free :: ps | Border :: ps | Stone _ :: ps -> check ps
+    | Free :: ps | Border :: ps | Stone _ :: ps -> check_five ps
     | [] -> false
   in
-  if List.exists check
+  if List.exists check_five
     @@ [ get_row rn gameboard; get_column cn gameboard; get_sum_diag (rn + cn) gameboard;
          get_diff_diag (rn - cn) gameboard ]
   then Some player
@@ -53,8 +53,8 @@ let play_game gameboard =
     in
     let new_counts =
       match player with
-      | Human -> Stat.{counts with human_mv = counts.human_mv + 1}
-      | Comp -> Stat.{counts with comp_mv = counts.comp_mv + 1}
+      | Human -> Stat.{counts with human_moves_count = counts.human_moves_count + 1}
+      | Comp -> Stat.{counts with comp_moves_count = counts.comp_moves_count + 1}
     in
     let new_gameboard = set_move move_pos player gameboard' in
     Game_gui.draw_stone gameboard.size player move_pos ;
@@ -62,7 +62,7 @@ let play_game gameboard =
     | None -> turn new_gameboard new_counts move_pos @@ opponent player
     | Some player -> (player, new_counts)
   in
-  turn gameboard Stat.{human_mv = 0; comp_mv = 0} (GP (0, 0)) Human
+  turn gameboard Stat.{human_moves_count = 0; comp_moves_count = 0} (GP (0, 0)) Human
 
 let run size =
   let gameboard = start_game size in

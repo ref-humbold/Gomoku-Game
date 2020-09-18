@@ -4,14 +4,14 @@ let button =
       yc = Gui.ratio 1 16;
       width = 160;
       height = 30;
-      label = "POWROT";
+      label = "BACK";
       colour = Graphics.white }
 
-let texts =
-  ( Gui.Txt
-      {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "WYGRANA!!! :)"; colour = Graphics.blue},
-    Gui.Txt
-      {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "PRZEGRANA :("; colour = Graphics.red} )
+let winner_text =
+  Gui.Txt {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "WINNER!!! :)"; colour = Graphics.blue}
+
+let loser_text =
+  Gui.Txt {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "LOSER :("; colour = Graphics.red}
 
 let step = 24
 
@@ -67,8 +67,8 @@ let draw_stone size player grid =
 let return winner =
   let show_winner () =
     match winner with
-    | Board.Human -> Gui.draw_text @@ fst texts
-    | Board.Comp -> Gui.draw_text @@ snd texts
+    | Board.Human -> Gui.draw_text winner_text
+    | Board.Comp -> Gui.draw_text loser_text
   in
   let rec check_click () =
     let mouse_pos = Gui.mouse_click () in

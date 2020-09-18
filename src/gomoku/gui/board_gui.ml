@@ -44,10 +44,7 @@ let buttons =
 
 let text =
   Gui.Txt
-    { xc = Gui.ratio 1 2;
-      yc = Gui.ratio 9 10;
-      label = "WYBIERZ ROZMIAR PLANSZY";
-      colour = Graphics.black }
+    {xc = Gui.ratio 1 2; yc = Gui.ratio 9 10; label = "CHOOSE BOARD SIZE"; colour = Graphics.black}
 
 let display () = Gui.clear_window Graphics.cyan ; Gui.draw_text text ; Gui.draw_buttons buttons
 
