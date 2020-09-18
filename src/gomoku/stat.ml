@@ -1,7 +1,13 @@
 type stat_info =
-  {hmoves : int; cmoves : int; won : int; lost : int; thmoves : int; tcmoves : int; opened : int}
+  { human_moves : int;
+    comp_moves : int;
+    won : int;
+    lost : int;
+    sum_human_moves : int;
+    sum_comp_moves : int;
+    opened : int }
 
-type moves_count = {human_mv : int; comp_mv : int}
+type moves_count = {human_moves_count : int; comp_moves_count : int}
 
 exception Stat_format_error of string
 
@@ -28,8 +34,8 @@ let encode_num num =
   enc num ""
 
 let encode stat_rcd =
-  let list_of_stat {hmoves; cmoves; won; lost; thmoves; tcmoves; opened} =
-    [hmoves; cmoves; won; lost; thmoves; tcmoves; opened]
+  let list_of_stat {human_moves; comp_moves; won; lost; sum_human_moves; sum_comp_moves; opened} =
+    [human_moves; comp_moves; won; lost; sum_human_moves; sum_comp_moves; opened]
   in
   let rec concatmap lst res =
     match lst with
@@ -62,13 +68,14 @@ let decode str =
   in
   let stat_from_list lst =
     match lst with
-    | [hmoves_num; cmoves_num; won_num; lost_num; thmoves_num; tcmoves_num; opened_num] ->
-      { hmoves = make_int 0 hmoves_num;
-        cmoves = make_int 0 cmoves_num;
+    | [ human_moves_num; comp_moves_num; won_num; lost_num; sum_human_moves_num; sum_comp_moves_num;
+        opened_num ] ->
+      { human_moves = make_int 0 human_moves_num;
+        comp_moves = make_int 0 comp_moves_num;
         won = make_int 0 won_num;
         lost = make_int 0 lost_num;
-        thmoves = make_int 0 thmoves_num;
-        tcmoves = make_int 0 tcmoves_num;
+        sum_human_moves = make_int 0 sum_human_moves_num;
+        sum_comp_moves = make_int 0 sum_comp_moves_num;
         opened = make_int 0 opened_num }
     | _ -> raise @@ Stat_format_error "Stat.read"
   in
@@ -80,7 +87,14 @@ let write stat =
   output_string file text ; flush file ; close_out file
 
 let clear () =
-  write {hmoves = 0; cmoves = 0; won = 0; lost = 0; thmoves = 0; tcmoves = 0; opened = 0}
+  write
+    { human_moves = 0;
+      comp_moves = 0;
+      won = 0;
+      lost = 0;
+      sum_human_moves = 0;
+      sum_comp_moves = 0;
+      opened = 0 }
 
 let read () =
   let file =
@@ -90,26 +104,26 @@ let read () =
   let text = input_line file in
   close_in file ; decode text
 
-let update_data winner {human_mv; comp_mv} =
-  let {won; lost; thmoves; tcmoves; opened; _} = read () in
+let update_data winner {human_moves_count; comp_moves_count} =
+  let {won; lost; sum_human_moves; sum_comp_moves; opened; _} = read () in
   match winner with
   | Board.Human ->
     write
-      { hmoves = human_mv;
-        cmoves = comp_mv;
+      { human_moves = human_moves_count;
+        comp_moves = comp_moves_count;
         won = won + 1;
         lost;
-        thmoves = thmoves + human_mv;
-        tcmoves = tcmoves + comp_mv;
+        sum_human_moves = sum_human_moves + human_moves_count;
+        sum_comp_moves = sum_comp_moves + comp_moves_count;
         opened }
   | Board.Comp ->
     write
-      { hmoves = human_mv;
-        cmoves = comp_mv;
+      { human_moves = human_moves_count;
+        comp_moves = comp_moves_count;
         won;
         lost = lost + 1;
-        thmoves = thmoves + human_mv;
-        tcmoves = tcmoves + comp_mv;
+        sum_human_moves = sum_human_moves + human_moves_count;
+        sum_comp_moves = sum_comp_moves + comp_moves_count;
         opened }
 
 let prepare_data () =

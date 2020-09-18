@@ -53,8 +53,8 @@ let play_game gameboard =
     in
     let new_counts =
       match player with
-      | Human -> Stat.{counts with human_mv = counts.human_mv + 1}
-      | Comp -> Stat.{counts with comp_mv = counts.comp_mv + 1}
+      | Human -> Stat.{counts with human_moves_count = counts.human_moves_count + 1}
+      | Comp -> Stat.{counts with comp_moves_count = counts.comp_moves_count + 1}
     in
     let new_gameboard = set_move move_pos player gameboard' in
     Game_gui.draw_stone gameboard.size player move_pos ;
@@ -62,7 +62,7 @@ let play_game gameboard =
     | None -> turn new_gameboard new_counts move_pos @@ opponent player
     | Some player -> (player, new_counts)
   in
-  turn gameboard Stat.{human_mv = 0; comp_mv = 0} (GP (0, 0)) Human
+  turn gameboard Stat.{human_moves_count = 0; comp_moves_count = 0} (GP (0, 0)) Human
 
 let run size =
   let gameboard = start_game size in

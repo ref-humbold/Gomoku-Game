@@ -4,14 +4,14 @@ let buttons =
         yc = Gui.ratio 2 16;
         width = 160;
         height = 50;
-        label = "POWROT";
+        label = "BACK";
         colour = Graphics.red },
     Gui.Btn
       { xc = Gui.ratio 1 4;
         yc = Gui.ratio 2 16;
         width = 160;
         height = 50;
-        label = "WYCZYSC";
+        label = "CLEAR";
         colour = Graphics.blue } )
 
 let rec check_click () =
@@ -23,31 +23,33 @@ let rec check_click () =
   else check_click ()
 
 let display () =
-  let Stat.{hmoves; cmoves; won; lost; thmoves; tcmoves; opened} = Stat.read () in
+  let Stat.{human_moves; comp_moves; won; lost; sum_human_moves; sum_comp_moves; opened} =
+    Stat.read ()
+  in
   let show_info xc yc text =
     Gui.draw_text @@ Gui.Txt {xc; yc; label = text; colour = Graphics.black}
   in
   Gui.clear_window Graphics.yellow ;
   Graphics.set_color Graphics.black ;
-  show_info (Gui.ratio 1 2) (Gui.ratio 14 16) "STATYSTYKI:" ;
-  show_info (Gui.ratio 1 2) (Gui.ratio 12 16) ("LICZBA URUCHOMIEN PROGRAMU: " ^ string_of_int opened) ;
+  show_info (Gui.ratio 1 2) (Gui.ratio 14 16) "STATISTICS:" ;
+  show_info (Gui.ratio 1 2) (Gui.ratio 12 16) ("NUMBER OF PROGRAMME STARTS: " ^ string_of_int opened) ;
   show_info
     (Gui.ratio 1 2)
     (Gui.ratio 11 16)
-    ("LICZBA ROZEGRANYCH GIER: " ^ string_of_int (won + lost)) ;
-  show_info (Gui.ratio 1 4) (Gui.ratio 10 16) ("WYGRANYCH: " ^ string_of_int won) ;
-  show_info (Gui.ratio 3 4) (Gui.ratio 10 16) ("PRZEGRANYCH: " ^ string_of_int lost) ;
+    ("NUMBER OF PLAYED GAMES: " ^ string_of_int (won + lost)) ;
+  show_info (Gui.ratio 1 4) (Gui.ratio 10 16) ("WON: " ^ string_of_int won) ;
+  show_info (Gui.ratio 3 4) (Gui.ratio 10 16) ("LOST: " ^ string_of_int lost) ;
   show_info
     (Gui.ratio 1 2)
     (Gui.ratio 9 16)
-    ("CALKOWITA LICZBA RUCHOW: " ^ string_of_int (thmoves + tcmoves)) ;
-  show_info (Gui.ratio 1 4) (Gui.ratio 8 16) ("TWOICH: " ^ string_of_int thmoves) ;
-  show_info (Gui.ratio 3 4) (Gui.ratio 8 16) ("KOMPUTERA: " ^ string_of_int tcmoves) ;
+    ("TOTAL NUMBER OF MOVES: " ^ string_of_int (sum_human_moves + sum_comp_moves)) ;
+  show_info (Gui.ratio 1 4) (Gui.ratio 8 16) ("YOURS: " ^ string_of_int sum_human_moves) ;
+  show_info (Gui.ratio 3 4) (Gui.ratio 8 16) ("COMPUTER'S: " ^ string_of_int sum_comp_moves) ;
   show_info
     (Gui.ratio 1 2)
     (Gui.ratio 6 16)
-    ("LICZBA RUCHOW W OSTATNIEJ GRZE: " ^ string_of_int (hmoves + cmoves)) ;
-  show_info (Gui.ratio 1 4) (Gui.ratio 5 16) ("TWOICH: " ^ string_of_int hmoves) ;
-  show_info (Gui.ratio 3 4) (Gui.ratio 5 16) ("KOMPUTERA: " ^ string_of_int cmoves) ;
+    ("NUMBER OF MOVES IN LAST GAME: " ^ string_of_int (human_moves + comp_moves)) ;
+  show_info (Gui.ratio 1 4) (Gui.ratio 5 16) ("YOURS: " ^ string_of_int human_moves) ;
+  show_info (Gui.ratio 3 4) (Gui.ratio 5 16) ("COMPUTER'S: " ^ string_of_int comp_moves) ;
   Gui.draw_button @@ fst buttons ;
   Gui.draw_button @@ snd buttons
