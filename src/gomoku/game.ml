@@ -1,7 +1,7 @@
 open Board
 
 let check_winner gameboard player (GP (rn, cn)) =
-  let rec check lst =
+  let rec check_five lst =
     match lst with
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Free :: _
       when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
@@ -30,10 +30,10 @@ let check_winner gameboard player (GP (rn, cn)) =
     | Border :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Border :: _
       when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
       true
-    | Free :: ps | Border :: ps | Stone _ :: ps -> check ps
+    | Free :: ps | Border :: ps | Stone _ :: ps -> check_five ps
     | [] -> false
   in
-  if List.exists check
+  if List.exists check_five
     @@ [ get_row rn gameboard; get_column cn gameboard; get_sum_diag (rn + cn) gameboard;
          get_diff_diag (rn - cn) gameboard ]
   then Some player

@@ -32,7 +32,7 @@ let display () =
   Gui.clear_window Graphics.yellow ;
   Graphics.set_color Graphics.black ;
   show_info (Gui.ratio 1 2) (Gui.ratio 14 16) "STATISTICS:" ;
-  show_info (Gui.ratio 1 2) (Gui.ratio 12 16) ("NUMBER OF PROGRAMME STARTS: " ^ string_of_int opened) ;
+  show_info (Gui.ratio 1 2) (Gui.ratio 12 16) ("NUMBER OF PROGRAMME RUNS: " ^ string_of_int opened) ;
   show_info
     (Gui.ratio 1 2)
     (Gui.ratio 11 16)

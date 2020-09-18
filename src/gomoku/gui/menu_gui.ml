@@ -4,21 +4,21 @@ let buttons =
         yc = Gui.ratio 3 4;
         width = 400;
         height = 100;
-        label = "NOWA GRA";
+        label = "NEW GAME";
         colour = Graphics.magenta };
     Gui.Btn
       { xc = Gui.ratio 1 2;
         yc = Gui.ratio 1 2;
         width = 400;
         height = 100;
-        label = "STATYSTYKI";
+        label = "STATISTICS";
         colour = Graphics.magenta };
     Gui.Btn
       { xc = Gui.ratio 1 2;
         yc = Gui.ratio 1 4;
         width = 400;
         height = 100;
-        label = "WYJSCIE";
+        label = "EXIT";
         colour = Graphics.magenta } ]
 
 let texts =

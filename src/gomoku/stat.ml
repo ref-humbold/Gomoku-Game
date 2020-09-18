@@ -15,7 +15,7 @@ let filename = ".gomoku.stat"
 
 let case_base () = if Random.bool () then 'A' else 'a'
 
-let encode_num num =
+let encode_number num =
   let enc num' res =
     if num' = 0
     then String.make 1 @@ case_base ()
@@ -40,11 +40,11 @@ let encode stat_rcd =
   let rec concatmap lst res =
     match lst with
     | [] -> res
-    | [x] -> res ^ encode_num x
+    | [x] -> res ^ encode_number x
     | x :: xs ->
       let base = Char.code @@ case_base () in
       let sep = String.make 1 @@ Char.chr ((2 * Random.int 16) + base - 3) in
-      concatmap xs @@ res ^ encode_num x ^ sep
+      concatmap xs @@ res ^ encode_number x ^ sep
   in
   concatmap (list_of_stat stat_rcd) ""
 
