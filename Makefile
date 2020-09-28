@@ -1,13 +1,15 @@
-BUILD_BIN = _build/install/default/bin
+BUILD_SRC = _build/default/src
+BUILD_EXEC = main.exe
 
 BIN = bin
 SRC = src
+TEST = test
 
-BIN_DIST = gomoku
+EXECUTABLE = gomoku
 
-.PHONY : all build clean compile format refresh
+.PHONY : all build clean compile dirs format refresh test
 
-all : compile
+all : compile test
 
 clean :
 	rm -fr $(BIN)
@@ -15,13 +17,18 @@ clean :
 
 refresh : clean all
 
+dirs :
+	mkdir -p $(BIN)
+
 build : format all
 
-compile :
+compile : dirs
 	dune build
-	mkdir -p $(BIN)
-	ln -sfn ../$(BUILD_BIN)/$(BIN_DIST) $(BIN)/$(BIN_DIST)
+	cp $(BUILD_SRC)/$(BUILD_EXEC) $(BIN)/$(EXECUTABLE)
+
+test :
+	dune runtest
 
 format :
-	for F in $$(find $(SRC) -regextype egrep -regex '.+\.mli?') ;\
-	  do ocamlformat -i $$F ; ocp-indent -i $$F ; done
+	find $(SRC) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
+	find $(TEST) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;

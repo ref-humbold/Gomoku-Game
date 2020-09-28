@@ -16,18 +16,29 @@ LET'S PLAY GOMOKU!
 ### Standard build & run
 > *versions last used by the author are in double parentheses and italic*
 
-Build process:
-+ Linux-based operating system *((Debian testing))*
-+ [OCaml](https://ocaml.org) *((4.08.1))*
-+ [Dune](https://dune.build) *((2.7.1))*
-+ [GNU Make](https://www.gnu.org/software/make) *((4.3))*
+General:
++ Linux-based operating system \
+  *((Debian testing))*
++ [OCaml](https://ocaml.org) \
+  *((APT package `ocaml`, 4.08.+))*
++ [Dune](https://dune.build) \
+  *((OPAM package `dune`, 2.7.+))*
++ [GNU Make](https://www.gnu.org/software/make) \
+  *((APT package `make`, 4.3.+))*
 
 Additional libraries:
-+ Graphics *((4.08.1))*
++ Graphics \
+  *((OPAM package `graphics`, 4.08.+))*
 
-Automated formatting by:
-+ Ocamlformat *((0.15))*
-+ Ocp-indent *((1.8.1))*
+### Unit testing
++ OUnit2 \
+  *((OPAM package `ounit2`, 2.2.+))*
+
+### Automated formatting
++ Ocamlformat \
+  *((OPAM package `ocamlformat`, 0.15.+))*
++ Ocp-indent \
+  *((OPAM package `ocp-indent`, 1.8.+))*
 
 -----
 
@@ -35,10 +46,13 @@ Automated formatting by:
 Gomoku can be built using **Dune** with help of **GNU Make**.
 
 Possible Make targets are:
-+ `make`, `make all` - same as `make compile`
++ `make`, `make all` - compile source files & link executable & run unit tests
++ `make build` - format source files & compile source files & link executable & run unit tests
 + `make compile` - compile source files & link executable
-+ `make build` - format source files & compile source files & link executable
-+ `make refresh` - remove additional build files & compile source files & link executable
++ `make test` - run unit tests
++ `make format` - format source files
++ `make clean` - remove additional build files
++ `make refresh` - remove additional build files & compile source files & link executable & run unit tests
 
 ## How to run?
 Gomoku can be run directly using the executable file in the `bin` directory:
