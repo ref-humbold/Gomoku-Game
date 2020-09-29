@@ -99,6 +99,10 @@ let analyze_winning player pos gameboard =
   in
   group GridMap.empty @@ List.concat @@ List.map extract_winning @@ get_dirs_at_pos pos gameboard
 
-let analyze move gameboard =
-  let winnings player move' = analyze_winning player move' gameboard in
+let analyze human_move comp_move gameboard =
+  let comp_winnings =
+    match comp_move with
+    | Some mv -> analyze_winning Comp mv gameboard
+    | None -> GridMap.empty
+  and human_blocks = analyze_winning Human human_move gameboard in
   ()
