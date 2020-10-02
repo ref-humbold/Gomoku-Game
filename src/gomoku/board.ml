@@ -1,6 +1,6 @@
 type grid = GP of int * int
 
-type player = Human | Comp
+type player = Comp | Human
 
 type field = Free | Border | Stone of player
 
