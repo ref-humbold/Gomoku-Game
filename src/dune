@@ -1,13 +1,9 @@
 (executable
-  (name main)
-  (libraries graphics gomokuLib)
-  (modes native)
-)
+ (name main)
+ (libraries gomokuLib)
+ (modes native))
 
 (env
-  (dev
-    (flags
-      (:standard -warn-error -A -w +A)
-    )
-  )
-)
+ (dev
+  (flags
+   (:standard -warn-error -A -w +A))))

@@ -35,7 +35,6 @@ let-and = compact
 let-binding-indent = 2
 let-binding-spacing = compact
 let-module = compact
-let-open = short
 margin = 100
 match-indent = 0
 match-indent-nested = never
