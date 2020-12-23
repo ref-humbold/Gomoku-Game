@@ -180,7 +180,7 @@ let make_multiple player situation =
     List.map
       (fun x ->
          match x with
-         | Five p | Four p -> p)
+         | Five p | Four p -> p )
       situation
   in
   match count_points sit_points with
@@ -196,7 +196,7 @@ let make_five player situation =
       (fun x ->
          match x with
          | Five _ -> true
-         | Four _ -> false)
+         | Four _ -> false )
       situation
   in
   match make_five_list with
@@ -213,7 +213,7 @@ let make_four player situation =
       (fun x ->
          match x with
          | Five _ -> false
-         | Four _ -> true)
+         | Four _ -> true )
       situation
   in
   match make_four_list with
