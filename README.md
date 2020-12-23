@@ -1,4 +1,7 @@
 # Gomoku-Game
+![Tag](https://img.shields.io/github/v/tag/ref-humbold/Gomoku-Game?style=plastic)
+![License](https://img.shields.io/github/license/ref-humbold/Gomoku-Game?style=plastic)
+
 Single-player gomoku game in Ocaml
 
 ## About
@@ -17,7 +20,7 @@ General:
 + Linux-based operating system \
   *((Debian testing))*
 + [OCaml](https://ocaml.org) \
-  *((APT package `ocaml`, 4.08.+))*
+  *((APT package `ocaml`, 4.11.+))*
 + [Dune](https://dune.build) \
   *((OPAM package `dune`, 2.7.+))*
 + [GNU Make](https://www.gnu.org/software/make) \
@@ -25,7 +28,7 @@ General:
 
 Additional libraries:
 + Graphics \
-  *((OPAM package `graphics`, 4.08.+))*
+  *((OPAM package `graphics`, 5.1.+))*
 
 ### Unit testing
 + OUnit2 \
@@ -33,7 +36,7 @@ Additional libraries:
 
 ### Automated formatting
 + Ocamlformat \
-  *((OPAM package `ocamlformat`, 0.15.+))*
+  *((OPAM package `ocamlformat`, 0.16.+))*
 + Ocp-indent \
   *((OPAM package `ocp-indent`, 1.8.+))*
 
