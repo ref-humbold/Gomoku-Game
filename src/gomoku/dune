@@ -1,5 +1,5 @@
 (library
-  (name gomokuLib)
-)
+ (name gomokuLib)
+ (libraries graphics))
 
 (include_subdirs unqualified)
