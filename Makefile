@@ -24,6 +24,7 @@ build : format all
 
 compile : dirs
 	dune build
+	@echo
 	cp $(BUILD_SRC)/$(BUILD_EXEC) $(BIN)/$(EXECUTABLE)
 
 format :
