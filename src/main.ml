@@ -1,4 +1,7 @@
 let main () =
-  Stat.prepare_data () ; Gui.new_window () ; Gui_runner.run_menu () ; Graphics.close_graph ()
+  GomokuLib.Stat.prepare_data () ;
+  GomokuLib.Gui.new_window () ;
+  GomokuLib.Gui_runner.run_menu () ;
+  Graphics.close_graph ()
 
 let _ = main ()

@@ -7,9 +7,9 @@ TEST = test
 
 EXECUTABLE = gomoku
 
-.PHONY : all build clean compile dirs format refresh test
+.PHONY : all build clean compile dirs format refresh
 
-all : compile test
+all : compile
 
 clean :
 	rm -fr $(BIN)
@@ -26,9 +26,5 @@ compile : dirs
 	dune build
 	cp $(BUILD_SRC)/$(BUILD_EXEC) $(BIN)/$(EXECUTABLE)
 
-test :
-	dune runtest
-
 format :
 	find $(SRC) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
-	find $(TEST) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;

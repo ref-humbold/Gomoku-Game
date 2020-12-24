@@ -52,10 +52,10 @@ let count_nums lst =
 
 let get_empties gameboard =
   let neighbours n m =
-    [ get_field (n - 1, m - 1) gameboard; get_field (n - 1, m) gameboard;
-      get_field (n - 1, m + 1) gameboard; get_field (n, m - 1) gameboard;
-      get_field (n, m + 1) gameboard; get_field (n + 1, m - 1) gameboard;
-      get_field (n + 1, m) gameboard; get_field (n + 1, m + 1) gameboard ]
+    [ get_field (GP (n - 1, m - 1)) gameboard; get_field (GP (n - 1, m)) gameboard;
+      get_field (GP (n - 1, m + 1)) gameboard; get_field (GP (n, m - 1)) gameboard;
+      get_field (GP (n, m + 1)) gameboard; get_field (GP (n + 1, m - 1)) gameboard;
+      get_field (GP (n + 1, m)) gameboard; get_field (GP (n + 1, m + 1)) gameboard ]
   in
   let check_stone field =
     match field with
@@ -259,7 +259,7 @@ let heuristic_move gameboard =
         match lst with
         | [] -> acc
         | p :: ps ->
-          let gameboard'' = set_move p player gameboard' in
+          let gameboard'' = set_move (GP (fst p, snd p)) player gameboard' in
           let acc' = (p, snd @@ forward_move (level - 1) a' b' (opponent player) gameboard'') in
           ( match player with
             | Comp ->
@@ -288,7 +288,8 @@ let clear () =
   moving.queue <- [Any] ;
   moving.last <- (0, 0)
 
-let move human_move gameboard =
+let move (GP (hr, hc)) gameboard =
+  let human_move = (hr, hc) in
   let analyzed = analyze human_move gameboard in
   let choose_pos () =
     match List.hd analyzed with
@@ -296,27 +297,27 @@ let move human_move gameboard =
       ( match List.hd moving.queue with
         | Any -> heuristic_move gameboard
         | Comp_five pos
-        |Human_multiple pos
-        |Human_five pos
-        |Comp_multiple pos
-        |Comp_four pos
-        |Human_four pos ->
+        | Human_multiple pos
+        | Human_five pos
+        | Comp_multiple pos
+        | Comp_four pos
+        | Human_four pos ->
           moving.queue <- List.tl moving.queue ;
           pos )
     | Comp_five pos
-    |Human_multiple pos
-    |Human_five pos
-    |Comp_multiple pos
-    |Comp_four pos
-    |Human_four pos ->
+    | Human_multiple pos
+    | Human_five pos
+    | Comp_multiple pos
+    | Comp_four pos
+    | Human_four pos ->
       let non_any = List.filter (fun mv -> mv <> Any) analyzed in
       moving.queue <- List.rev_append non_any moving.queue ;
       pos
   in
   let rec make_move () =
     let pos = choose_pos () in
-    if get_field pos gameboard = Free then pos else make_move ()
+    if get_field (GP (fst pos, snd pos)) gameboard = Free then pos else make_move ()
   in
   let move_pos = make_move () in
   moving.last <- move_pos ;
-  move_pos
+  GP (fst move_pos, snd move_pos)
