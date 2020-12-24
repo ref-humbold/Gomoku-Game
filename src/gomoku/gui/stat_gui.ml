@@ -15,12 +15,8 @@ let buttons =
         colour = Graphics.red } ]
 
 let click actions =
-  let action =
-    match Gui.click buttons with
-    | 0 -> Stat.clear () ; List.nth actions 0
-    | i -> List.nth actions i
-  in
-  action ()
+  let stat_actions = (fun () -> Stat.clear () ; List.hd actions ()) :: List.tl actions in
+  Gui.click @@ List.combine buttons stat_actions
 
 let display () =
   let Stat.{human_moves; comp_moves; won; lost; sum_human_moves; sum_comp_moves; opened} =

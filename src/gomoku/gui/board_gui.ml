@@ -49,5 +49,5 @@ let text =
 let display () = Gui.clear_window Graphics.cyan ; Gui.draw_text text ; Gui.draw_buttons buttons
 
 let choose_size () =
-  let index = Gui.click buttons in
-  15 + (index * 2)
+  let add_action i button = (button, fun () -> 15 + (i * 2)) in
+  Gui.click @@ List.mapi add_action buttons

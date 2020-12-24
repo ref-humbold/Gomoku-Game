@@ -32,6 +32,4 @@ let texts =
 
 let display () = Gui.clear_window Graphics.blue ; Gui.draw_buttons buttons ; Gui.draw_texts texts
 
-let click actions =
-  let action = List.nth actions @@ Gui.click buttons in
-  action ()
+let click actions = Gui.click @@ List.combine buttons actions

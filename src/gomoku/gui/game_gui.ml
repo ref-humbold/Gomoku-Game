@@ -71,5 +71,5 @@ let return winner =
     | Board.Human -> Gui.draw_text winner_text
     | Board.Comp -> Gui.draw_text loser_text
   in
-  let click btn = ignore @@ Gui.click [btn] in
+  let click btn = Gui.click [(btn, ignore)] in
   show_winner () ; Gui.draw_button button ; click button

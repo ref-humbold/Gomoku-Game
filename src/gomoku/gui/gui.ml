@@ -50,12 +50,11 @@ let mouse_click () =
   let st = Graphics.wait_next_event [Graphics.Button_down] in
   (st.Graphics.mouse_x, st.Graphics.mouse_y)
 
-let rec click buttons =
-  let check_clicked (x, y) i (Button {xc; yc; half_width; half_height; _}) =
-    if abs (x - xc) <= half_width && abs (y - yc) <= half_height then i else -1
+let rec click button_action =
+  let check_clicked (x, y) (Button {xc; yc; half_width; half_height; _}, _) =
+    abs (x - xc) <= half_width && abs (y - yc) <= half_height
   in
   let mouse_pos = mouse_click () in
-  let clicked = List.mapi (check_clicked mouse_pos) buttons in
-  match List.find_opt (fun i -> i >= 0) clicked with
-  | Some i -> i
-  | None -> click buttons
+  match List.find_opt (check_clicked mouse_pos) button_action with
+  | Some (_, action) -> action ()
+  | None -> click button_action
