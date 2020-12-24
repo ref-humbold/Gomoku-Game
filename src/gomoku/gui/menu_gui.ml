@@ -1,19 +1,19 @@
 let buttons =
-  [ Gui.Btn
+  [ Gui.Button
       { xc = Gui.ratio 1 2;
         yc = Gui.ratio 3 4;
         width = 400;
         height = 100;
         label = "NEW GAME";
         colour = Graphics.magenta };
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 1 2;
         yc = Gui.ratio 1 2;
         width = 400;
         height = 100;
         label = "STATISTICS";
         colour = Graphics.magenta };
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 1 2;
         yc = Gui.ratio 1 4;
         width = 400;
@@ -22,9 +22,9 @@ let buttons =
         colour = Graphics.magenta } ]
 
 let texts =
-  [ Gui.Txt
+  [ Gui.Text
       {xc = Gui.ratio 1 2; yc = Gui.ratio 7 8; label = Gui.window_title; colour = Graphics.green};
-    Gui.Txt
+    Gui.Text
       { xc = Gui.ratio 1 2;
         yc = Gui.ratio 1 8;
         label = "(C) 2019 RAFAL KALETA, MIT LICENSE";

@@ -1,5 +1,5 @@
 let button =
-  Gui.Btn
+  Gui.Button
     { xc = Gui.ratio 1 2;
       yc = Gui.ratio 1 16;
       width = 160;
@@ -8,10 +8,11 @@ let button =
       colour = Graphics.white }
 
 let winner_text =
-  Gui.Txt {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "WINNER!!! :)"; colour = Graphics.blue}
+  Gui.Text
+    {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "WINNER!!! :)"; colour = Graphics.blue}
 
 let loser_text =
-  Gui.Txt {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "LOSER :("; colour = Graphics.red}
+  Gui.Text {xc = Gui.ratio 1 2; yc = Gui.ratio 92 100; label = "LOSER :("; colour = Graphics.red}
 
 let step = 24
 

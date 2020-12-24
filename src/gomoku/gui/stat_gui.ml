@@ -1,12 +1,12 @@
 let buttons =
-  ( Gui.Btn
+  ( Gui.Button
       { xc = Gui.ratio 3 4;
         yc = Gui.ratio 2 16;
         width = 160;
         height = 50;
         label = "BACK";
         colour = Graphics.red },
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 1 4;
         yc = Gui.ratio 2 16;
         width = 160;
@@ -27,7 +27,7 @@ let display () =
     Stat.read ()
   in
   let show_info xc yc text =
-    Gui.draw_text @@ Gui.Txt {xc; yc; label = text; colour = Graphics.black}
+    Gui.draw_text @@ Gui.Text {xc; yc; label = text; colour = Graphics.black}
   in
   Gui.clear_window Graphics.yellow ;
   Graphics.set_color Graphics.black ;

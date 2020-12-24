@@ -1,40 +1,40 @@
 let buttons =
-  [ Gui.Btn
+  [ Gui.Button
       { xc = Gui.ratio 1 4;
         yc = Gui.ratio 3 4;
         width = 200;
         height = 100;
         label = "15 x 15";
         colour = Graphics.green };
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 3 4;
         yc = Gui.ratio 3 4;
         width = 200;
         height = 100;
         label = "17 x 17";
         colour = Graphics.green };
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 1 4;
         yc = Gui.ratio 1 2;
         width = 200;
         height = 100;
         label = "19 x 19";
         colour = Graphics.green };
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 3 4;
         yc = Gui.ratio 1 2;
         width = 200;
         height = 100;
         label = "21 x 21";
         colour = Graphics.green };
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 1 4;
         yc = Gui.ratio 1 4;
         width = 200;
         height = 100;
         label = "23 x 23";
         colour = Graphics.green };
-    Gui.Btn
+    Gui.Button
       { xc = Gui.ratio 3 4;
         yc = Gui.ratio 1 4;
         width = 200;
@@ -43,7 +43,7 @@ let buttons =
         colour = Graphics.green } ]
 
 let text =
-  Gui.Txt
+  Gui.Text
     {xc = Gui.ratio 1 2; yc = Gui.ratio 9 10; label = "CHOOSE BOARD SIZE"; colour = Graphics.black}
 
 let display () = Gui.clear_window Graphics.cyan ; Gui.draw_text text ; Gui.draw_buttons buttons
