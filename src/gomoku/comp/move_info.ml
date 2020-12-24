@@ -6,26 +6,22 @@ type move =
   | Double_three of player * grid
   | Heuristic
 
-type t = {mutable stack : move list; mutable last : grid option}
+type move_info = {mutable stack : move list; mutable last : grid option}
 
-let move_info = {stack = []; last = None}
+let initial = {stack = [Heuristic]; last = None}
 
-let init () =
-  move_info.stack <- [Heuristic] ;
-  move_info.last <- None
+let last info = info.last
 
-let last = move_info.last
+let set_last info g = info.last <- Some g
 
-let set_last g = move_info.last <- Some g
+let put info moves = info.stack <- moves @ info.stack
 
-let put moves = move_info.stack <- moves @ move_info.stack
-
-let top =
-  match move_info.stack with
+let top info =
+  match info.stack with
   | [] -> None
-  | _ -> Some (List.hd move_info.stack)
+  | _ -> Some (List.hd info.stack)
 
-let pop () =
-  match move_info.stack with
+let pop info =
+  match info.stack with
   | [] -> ()
-  | _ -> move_info.stack <- List.tl move_info.stack
+  | _ -> info.stack <- List.tl info.stack
