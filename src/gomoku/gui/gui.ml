@@ -1,6 +1,11 @@
 type button =
   | Button of
-      {xc : int; yc : int; width : int; height : int; label : string; colour : Graphics.color}
+      { xc : int;
+        yc : int;
+        half_width : int;
+        half_height : int;
+        label : string;
+        colour : Graphics.color }
 
 type text = Text of {xc : int; yc : int; label : string; colour : Graphics.color}
 
@@ -34,9 +39,9 @@ let draw_text (Text {label; colour; _} as text) =
 
 let draw_texts lst = List.iter draw_text lst
 
-let draw_button (Button {xc; yc; width; height; label; colour}) =
+let draw_button (Button {xc; yc; half_width; half_height; label; colour}) =
   Graphics.set_color colour ;
-  Graphics.fill_rect (xc - (width / 2)) (yc - (height / 2)) width height ;
+  Graphics.fill_rect (xc - half_width) (yc - half_height) (half_width * 2) (half_height * 2) ;
   draw_text @@ Text {xc; yc; label; colour = Graphics.black}
 
 let draw_buttons lst = List.iter draw_button lst
@@ -45,5 +50,12 @@ let mouse_click () =
   let st = Graphics.wait_next_event [Graphics.Button_down] in
   (st.Graphics.mouse_x, st.Graphics.mouse_y)
 
-let check_button_clicked (x, y) (Button {xc; yc; width; height; _}) =
-  abs (x - xc) <= width && abs (y - yc) <= height
+let rec click buttons =
+  let check_clicked (x, y) i (Button {xc; yc; half_width; half_height; _}) =
+    if abs (x - xc) <= half_width && abs (y - yc) <= half_height then i else -1
+  in
+  let mouse_pos = mouse_click () in
+  let clicked = List.mapi (check_clicked mouse_pos) buttons in
+  match List.find_opt (fun i -> i >= 0) clicked with
+  | Some i -> i
+  | None -> click buttons

@@ -2,8 +2,8 @@ let button =
   Gui.Button
     { xc = Gui.ratio 1 2;
       yc = Gui.ratio 1 16;
-      width = 160;
-      height = 30;
+      half_width = 80;
+      half_height = 15;
       label = "BACK";
       colour = Graphics.white }
 
@@ -71,8 +71,5 @@ let return winner =
     | Board.Human -> Gui.draw_text winner_text
     | Board.Comp -> Gui.draw_text loser_text
   in
-  let rec check_click () =
-    let mouse_pos = Gui.mouse_click () in
-    if not @@ Gui.check_button_clicked mouse_pos button then check_click ()
-  in
-  show_winner () ; Gui.draw_button button ; check_click ()
+  let click btn = ignore @@ Gui.click [btn] in
+  show_winner () ; Gui.draw_button button ; click button

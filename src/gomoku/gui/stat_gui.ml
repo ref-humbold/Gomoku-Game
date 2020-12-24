@@ -1,26 +1,26 @@
 let buttons =
-  ( Gui.Button
-      { xc = Gui.ratio 3 4;
-        yc = Gui.ratio 2 16;
-        width = 160;
-        height = 50;
-        label = "BACK";
-        colour = Graphics.red },
-    Gui.Button
+  [ Gui.Button
       { xc = Gui.ratio 1 4;
         yc = Gui.ratio 2 16;
-        width = 160;
-        height = 50;
+        half_width = 80;
+        half_height = 25;
         label = "CLEAR";
-        colour = Graphics.blue } )
+        colour = Graphics.blue };
+    Gui.Button
+      { xc = Gui.ratio 3 4;
+        yc = Gui.ratio 2 16;
+        half_width = 80;
+        half_height = 25;
+        label = "BACK";
+        colour = Graphics.red } ]
 
-let rec check_click () =
-  let mouse_pos = Gui.mouse_click () in
-  if Gui.check_button_clicked mouse_pos @@ fst buttons
-  then 0
-  else if Gui.check_button_clicked mouse_pos @@ snd buttons
-  then (Stat.clear () ; 1)
-  else check_click ()
+let click actions =
+  let action =
+    match Gui.click buttons with
+    | 0 -> Stat.clear () ; List.nth actions 0
+    | i -> List.nth actions i
+  in
+  action ()
 
 let display () =
   let Stat.{human_moves; comp_moves; won; lost; sum_human_moves; sum_comp_moves; opened} =
@@ -47,4 +47,4 @@ let display () =
     (show_number "NUMBER OF MOVES IN LAST GAME: " (human_moves + comp_moves)) ;
   show_info (Gui.ratio 1 4) (Gui.ratio 5 16) (show_number "YOURS: " human_moves) ;
   show_info (Gui.ratio 3 4) (Gui.ratio 5 16) (show_number "COMPUTER'S: " comp_moves) ;
-  Gui.draw_buttons [fst buttons; snd buttons]
+  Gui.draw_buttons buttons
