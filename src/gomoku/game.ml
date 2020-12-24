@@ -40,7 +40,7 @@ let check_winner gameboard player (GP (rn, cn)) =
   else None
 
 let start_game size =
-  Random.self_init () ; Old_comp_player.clear () ; Game_gui.display size ; create_board size
+  Random.self_init () ; Comp_player.clear () ; Game_gui.display size ; create_board size
 
 let end_game (winner, moves) = Stat.update_data winner moves ; Game_gui.return winner
 
@@ -49,7 +49,7 @@ let play_game gameboard =
     let move_pos =
       match player with
       | Human -> Human_player.move gameboard'
-      | Comp -> Old_comp_player.move last_move gameboard'
+      | Comp -> Comp_player.move last_move gameboard'
     in
     let new_counts =
       match player with

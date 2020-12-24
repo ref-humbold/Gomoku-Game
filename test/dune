@@ -1,8 +1,0 @@
-(tests
- (names comp_analyzer_test)
- (libraries oUnit gomokuLib))
-
-(env
- (dev
-  (flags
-   (:standard -warn-error -A -w +A))))
