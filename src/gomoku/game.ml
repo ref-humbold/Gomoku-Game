@@ -1,3 +1,4 @@
+open Board_types
 open Board
 
 let check_winner gameboard player (GP (rn, cn)) =
@@ -34,8 +35,8 @@ let check_winner gameboard player (GP (rn, cn)) =
     | [] -> false
   in
   if List.exists check_five
-    @@ [ get_row rn gameboard; get_column cn gameboard; get_sum_diag (rn + cn) gameboard;
-         get_diff_diag (rn - cn) gameboard ]
+     @@ [ get_row rn gameboard; get_column cn gameboard; get_sum_diag (rn + cn) gameboard;
+          get_diff_diag (rn - cn) gameboard ]
   then Some player
   else None
 
