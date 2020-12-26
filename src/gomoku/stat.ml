@@ -107,7 +107,7 @@ let read () =
 let update_data winner {human_moves_count; comp_moves_count} =
   let {won; lost; sum_human_moves; sum_comp_moves; opened; _} = read () in
   match winner with
-  | Board.Human ->
+  | Board_types.Human ->
     write
       { human_moves = human_moves_count;
         comp_moves = comp_moves_count;
@@ -116,7 +116,7 @@ let update_data winner {human_moves_count; comp_moves_count} =
         sum_human_moves = sum_human_moves + human_moves_count;
         sum_comp_moves = sum_comp_moves + comp_moves_count;
         opened }
-  | Board.Comp ->
+  | Board_types.Comp ->
     write
       { human_moves = human_moves_count;
         comp_moves = comp_moves_count;

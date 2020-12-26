@@ -1,3 +1,4 @@
+open Board_types
 open Board
 
 type direction =

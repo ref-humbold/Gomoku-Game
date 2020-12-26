@@ -1,4 +1,4 @@
-open Board
+open Board_types
 
 type move =
   | Five of player * grid

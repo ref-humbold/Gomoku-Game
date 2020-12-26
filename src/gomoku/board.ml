@@ -1,14 +1,6 @@
-type grid = GP of int * int
-
-type player = Comp | Human
-
-type field = Free | Border | Stone of player
-
-type gameboard = {fields : field list list; size : int}
+open Board_types
 
 exception Incorrect_gameboard of string
-
-exception Incorrect_player of string
 
 (*  size = 3:
     Border  Border  Border  Border  Border
@@ -72,8 +64,3 @@ let set_move (GP (rn, cn)) player gameboard =
     | [] -> raise @@ Incorrect_gameboard "Board.set_move @ row"
   in
   {gameboard with fields = set_row rn gameboard.fields}
-
-let opponent player =
-  match player with
-  | Human -> Comp
-  | Comp -> Human

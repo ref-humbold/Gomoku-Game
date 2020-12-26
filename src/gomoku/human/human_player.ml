@@ -1,4 +1,4 @@
-open Board
+open Board_types
 
 let rec choose_stone size =
   let rn, cn = Game_gui.grid_of_point size @@ Gui.mouse_click () in

@@ -1,3 +1,5 @@
+open Board_types
+
 let button =
   Gui.Button
     { xc = Gui.ratio 1 2;
@@ -35,7 +37,7 @@ let grid_of_point size (x, y) =
   let conv v = (v - begline + (step / 2)) / step in
   (conv y, conv x)
 
-let point_of_grid size (Board.GP (rn, cn)) =
+let point_of_grid size (GP (rn, cn)) =
   let begline, _ = get_borders size in
   let conv v = begline + (v * step) in
   (conv cn, conv rn)
@@ -58,8 +60,8 @@ let display size =
 let draw_stone size player grid =
   let stone_colour =
     match player with
-    | Board.Human -> Graphics.white
-    | Board.Comp -> Graphics.black
+    | Human -> Graphics.white
+    | Comp -> Graphics.black
   in
   let x, y = point_of_grid size grid in
   Graphics.set_color stone_colour ;
@@ -68,8 +70,8 @@ let draw_stone size player grid =
 let return winner =
   let show_winner () =
     match winner with
-    | Board.Human -> Gui.draw_text winner_text
-    | Board.Comp -> Gui.draw_text loser_text
+    | Human -> Gui.draw_text winner_text
+    | Comp -> Gui.draw_text loser_text
   in
   let click btn = Gui.click [(btn, ignore)] in
   show_winner () ; Gui.draw_button button ; click button

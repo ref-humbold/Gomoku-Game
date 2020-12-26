@@ -1,3 +1,4 @@
+open Board_types
 open Board
 
 let move_information = Move_info.initial
