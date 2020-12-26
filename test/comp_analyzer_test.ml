@@ -1,9 +1,7 @@
 open OUnit2
 open GomokuLib
 open Board_types
-open Board
 open Comp_analyzer
-open Utils
 
 (* comp_analyzer_Test_list *)
 
