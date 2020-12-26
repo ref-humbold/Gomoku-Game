@@ -13,18 +13,20 @@ module GridMap = Map.Make (struct
   let compare = Stdlib.compare
 end)
 
-let get_row_dim rn gameboard = Row (rn, get_row rn gameboard)
+let get_row_dir rn gameboard = Row (rn, get_row rn gameboard)
 
-let get_column_dim cn gameboard = Column (cn, get_column cn gameboard)
+let get_column_dir cn gameboard = Column (cn, get_column cn gameboard)
 
-let get_sum_diag_dim sum gameboard = Sum (sum, get_sum_diag sum gameboard)
+let get_sum_diag_dir sum gameboard = Sum (sum, get_sum_diag sum gameboard)
 
-let get_diff_diag_dim diff gameboard = Diff (diff, get_diff_diag diff gameboard)
+let get_diff_diag_dir diff gameboard = Diff (diff, get_diff_diag diff gameboard)
 
+(* Get all directions at specified grid point *)
 let get_dirs_at_pos (GP (rn, cn)) gameboard =
-  [ get_row_dim rn gameboard; get_column_dim cn gameboard; get_sum_diag_dim (rn + cn) gameboard;
-    get_diff_diag_dim (rn - cn) gameboard ]
+  [ get_row_dir rn gameboard; get_column_dir cn gameboard; get_sum_diag_dir (rn + cn) gameboard;
+    get_diff_diag_dir (rn - cn) gameboard ]
 
+(* Convert map <grid point, (line length, player)> to sorted list of next moves. *)
 let convert_to_moves map =
   let rec convert pos lst acc =
     match lst with
@@ -37,7 +39,8 @@ let convert_to_moves map =
   in
   List.sort compare @@ GridMap.fold convert map []
 
-let analyze_winning player pos gameboard =
+(* Extract all lines for a player at specified point. *)
+let analyze_lines player pos gameboard =
   let get_pos dir i =
     match dir with
     | Row (rn, _) -> GP (rn, i)
@@ -112,6 +115,7 @@ let analyze_winning player pos gameboard =
   in
   group GridMap.empty @@ List.concat @@ List.map extract_winning @@ get_dirs_at_pos pos gameboard
 
+(* Create list of next moves after a round of human and computer moves. *)
 let analyze human_move comp_move gameboard =
   let merge_func _ lst1 lst2 =
     match (lst1, lst2) with
@@ -120,9 +124,9 @@ let analyze human_move comp_move gameboard =
     | None, Some ys -> Some (List.sort compare ys)
     | None, None -> None
   in
-  let comp_winnings =
+  let comp_lines =
     match comp_move with
-    | Some mv -> analyze_winning Comp mv gameboard
+    | Some mv -> analyze_lines Comp mv gameboard
     | None -> GridMap.empty
-  and human_blocks = analyze_winning Human human_move gameboard in
-  convert_to_moves @@ GridMap.merge merge_func comp_winnings human_blocks
+  and human_lines = analyze_lines Human human_move gameboard in
+  convert_to_moves @@ GridMap.merge merge_func comp_lines human_lines
