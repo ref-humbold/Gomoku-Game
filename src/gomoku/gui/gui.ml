@@ -19,10 +19,6 @@ let ratio num denom =
   let d' = denom / gcd num denom in
   n' * window_size / d'
 
-let center_text (Text {xc; yc; label; _}) =
-  let xt, yt = Graphics.text_size label in
-  (xc - (xt / 2), yc - (yt / 2))
-
 let new_window () =
   Graphics.open_graph @@ " " ^ string_of_int window_size ^ "x" ^ string_of_int window_size ;
   Graphics.set_window_title window_title ;
@@ -33,9 +29,11 @@ let clear_window colour =
   Graphics.set_color colour ;
   Graphics.fill_rect 0 0 window_size window_size
 
-let draw_text (Text {label; colour; _} as text) =
-  let x, y = center_text text in
-  Graphics.set_color colour ; Graphics.moveto x y ; Graphics.draw_string label
+let draw_text (Text {xc; yc; label; colour}) =
+  let text_width, text_height = Graphics.text_size label in
+  Graphics.set_color colour ;
+  Graphics.moveto (xc - (text_width / 2)) (yc - (text_height / 2)) ;
+  Graphics.draw_string label
 
 let draw_texts lst = List.iter draw_text lst
 
