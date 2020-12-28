@@ -8,10 +8,10 @@ type direction =
   | Diff of int * field list
 
 module GridMap = Map.Make (struct
-  type t = grid
+    type t = grid
 
-  let compare = Stdlib.compare
-end)
+    let compare = Stdlib.compare
+  end)
 
 let get_row_dir rn gameboard = Row (rn, get_row rn gameboard)
 
@@ -109,8 +109,8 @@ let analyze_lines player pos gameboard =
     match lst with
     | (pos, player, n) :: lst' ->
       ( match GridMap.find_opt pos acc with
-      | Some nums -> group (GridMap.add pos ((n, player) :: nums) acc) lst'
-      | None -> group (GridMap.add pos [(n, player)] acc) lst' )
+        | Some nums -> group (GridMap.add pos ((n, player) :: nums) acc) lst'
+        | None -> group (GridMap.add pos [(n, player)] acc) lst' )
     | [] -> acc
   in
   group GridMap.empty @@ List.concat @@ List.map extract_winning @@ get_dirs_at_pos pos gameboard
