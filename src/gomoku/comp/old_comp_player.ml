@@ -53,10 +53,14 @@ let count_nums lst =
 
 let get_empties gameboard =
   let neighbours n m =
-    [ get_field (GP (n - 1, m - 1)) gameboard; get_field (GP (n - 1, m)) gameboard;
-      get_field (GP (n - 1, m + 1)) gameboard; get_field (GP (n, m - 1)) gameboard;
-      get_field (GP (n, m + 1)) gameboard; get_field (GP (n + 1, m - 1)) gameboard;
-      get_field (GP (n + 1, m)) gameboard; get_field (GP (n + 1, m + 1)) gameboard ]
+    [ get_field (GP (n - 1, m - 1)) gameboard;
+      get_field (GP (n - 1, m)) gameboard;
+      get_field (GP (n - 1, m + 1)) gameboard;
+      get_field (GP (n, m - 1)) gameboard;
+      get_field (GP (n, m + 1)) gameboard;
+      get_field (GP (n + 1, m - 1)) gameboard;
+      get_field (GP (n + 1, m)) gameboard;
+      get_field (GP (n + 1, m + 1)) gameboard ]
   in
   let check_stone field =
     match field with
@@ -135,7 +139,9 @@ let analyze_situation player (n, m) gameboard =
   List.concat
   @@ List.map
     check
-    [ get_row_dim n gameboard; get_column_dim m gameboard; get_sum_diag_dim (n + m) gameboard;
+    [ get_row_dim n gameboard;
+      get_column_dim m gameboard;
+      get_sum_diag_dim (n + m) gameboard;
       get_diff_diag_dim (n - m) gameboard ]
 
 let check_board_situation player gameboard =

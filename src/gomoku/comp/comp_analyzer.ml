@@ -23,7 +23,9 @@ let get_diff_diag_dir diff gameboard = Diff (diff, get_diff_diag diff gameboard)
 
 (* Get all directions at specified grid point *)
 let get_dirs_at_pos (GP (rn, cn)) gameboard =
-  [ get_row_dir rn gameboard; get_column_dir cn gameboard; get_sum_diag_dir (rn + cn) gameboard;
+  [ get_row_dir rn gameboard;
+    get_column_dir cn gameboard;
+    get_sum_diag_dir (rn + cn) gameboard;
     get_diff_diag_dir (rn - cn) gameboard ]
 
 (* Convert map <grid point, (line length, player)> to sorted list of next moves. *)
