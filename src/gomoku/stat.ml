@@ -68,7 +68,12 @@ let decode str =
   in
   let stat_from_list lst =
     match lst with
-    | [ human_moves_num; comp_moves_num; won_num; lost_num; sum_human_moves_num; sum_comp_moves_num;
+    | [ human_moves_num;
+        comp_moves_num;
+        won_num;
+        lost_num;
+        sum_human_moves_num;
+        sum_comp_moves_num;
         opened_num ] ->
       { human_moves = make_int 0 human_moves_num;
         comp_moves = make_int 0 comp_moves_num;
