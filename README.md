@@ -36,7 +36,7 @@ Additional libraries:
 
 ### Automated formatting
 + Ocamlformat \
-  *((OPAM package `ocamlformat`, 0.16.+))*
+  *((OPAM package `ocamlformat`, 0.20.+))*
 + Ocp-indent \
   *((OPAM package `ocp-indent`, 1.8.+))*
 
