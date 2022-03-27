@@ -1,14 +1,14 @@
-FROM debian:stable
+FROM ocaml/opam:debian
 
 WORKDIR /code
 
 # Download dependencies
 RUN apt-get update \
-    && apt-get install -y ocaml opam make
+    && apt-get install -y pkg-config
 RUN opam install -y dune graphics
 
 # Copy project files
-COPY . .
+COPY --chown=opam . .
 
 # Build
 RUN make compile
