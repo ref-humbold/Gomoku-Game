@@ -5,6 +5,10 @@ _build/
 *.install
 .merlin
 
+# OCaml formatting
+.ocamlformat
+.ocp-indent
+
 # Visual Studio Code
 .vscode
 *.code-workspace
