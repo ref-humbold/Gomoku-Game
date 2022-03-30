@@ -15,3 +15,5 @@ RUN sudo chown -R opam .
 # Build
 RUN eval $(opam env) \
     && make compile
+
+ENTRYPOINT [ "./bin/gomoku" ]
