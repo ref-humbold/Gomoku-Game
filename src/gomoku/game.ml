@@ -5,32 +5,23 @@ let check_winner gameboard player (GP (rn, cn)) =
   let rec check_five lst =
     match lst with
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Free :: _
-      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Border :: _
-      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Free :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Stone op :: _
-      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Stone op :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Free :: _
-      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Stone op :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Border :: _
-      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Stone e1 :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Stone e2 :: _
-      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player && e1 <> p5 && e2 = e1 ->
-      true
+      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player && e1 <> p5 && e2 = e1 -> true
     | Border :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Stone op :: _
-      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when op <> p1 && p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Border :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Free :: _
-      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Border :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: Stone p5 :: Border :: _
-      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player ->
-      true
+      when p1 = p2 && p2 = p3 && p3 = p4 && p4 = p5 && p5 = player -> true
     | Free :: ps | Border :: ps | Stone _ :: ps -> check_five ps
     | [] -> false
   in

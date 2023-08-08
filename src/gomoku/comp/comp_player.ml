@@ -148,11 +148,9 @@ let check_board_situation player gameboard =
   let rec check acc lst =
     match lst with
     | Stone p0 :: Stone p1 :: Stone p2 :: Stone p3 :: Stone p4 :: ps
-      when player = p0 && p0 = p1 && p1 = p2 && p2 = p3 && p3 = p4 ->
-      check (5 :: acc) ps
+      when player = p0 && p0 = p1 && p1 = p2 && p2 = p3 && p3 = p4 -> check (5 :: acc) ps
     | Stone p0 :: Stone p1 :: Stone p2 :: Stone p3 :: ps
-      when player = p0 && p0 = p1 && p1 = p2 && p2 = p3 ->
-      check (4 :: acc) ps
+      when player = p0 && p0 = p1 && p1 = p2 && p2 = p3 -> check (4 :: acc) ps
     | Stone p0 :: Stone p1 :: Stone p2 :: ps when player = p0 && p0 = p1 && p1 = p2 ->
       check (3 :: acc) ps
     | Stone p0 :: Stone p1 :: ps when player = p0 && p0 = p1 -> check (2 :: acc) ps

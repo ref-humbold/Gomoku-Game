@@ -2,12 +2,8 @@ open Board_types
 
 exception Incorrect_gameboard of string
 
-(*  size = 3:
-    Border  Border  Border  Border  Border
-    Border  Free    Free    Free    Border
-    Border  Free    Free    Free    Border
-    Border  Free    Free    Free    Border
-    Border  Border  Border  Border  Border
+(* size = 3: Border Border Border Border Border Border Free Free Free Border Border Free Free Free
+   Border Border Free Free Free Border Border Border Border Border Border
 *)
 let create_board size =
   let rec create_row rn cn acc =
