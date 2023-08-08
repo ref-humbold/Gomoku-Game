@@ -16,7 +16,6 @@ LET'S PLAY GOMOKU!
 ### Standard build & run
 > *versions last used by the author are in double parentheses and italic*
 
-General:
 + Linux-based operating system \
   *((Debian testing))*
 + [OCaml](https://ocaml.org) \
@@ -25,8 +24,6 @@ General:
   *((OPAM package `dune`, 3.10.+))*
 + [GNU Make](https://www.gnu.org/software/make) \
   *((APT package `make`, 4.3.+))*
-
-Additional libraries:
 + Graphics \
   *((OPAM package `graphics`, 5.1.+))*
 

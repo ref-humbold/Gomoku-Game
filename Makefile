@@ -2,7 +2,6 @@ BUILD_SRC = _build/default/src
 BUILD_EXEC = gomoku_app.exe
 
 SRC = src
-TEST = test
 
 OUTPUT = buildOut
 BIN = $(OUTPUT)/bin
