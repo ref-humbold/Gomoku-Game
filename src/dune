@@ -1,9 +1,9 @@
 (executable
- (name main)
+ (name gomoku_app)
  (libraries gomokuLib)
  (modes native))
 
 (env
  (dev
   (flags
-   (:standard -warn-error -A -w +A))))
+   (:standard -warn-error -A -w +A-70))))

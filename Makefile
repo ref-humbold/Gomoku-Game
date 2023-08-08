@@ -1,34 +1,37 @@
 BUILD_SRC = _build/default/src
-BUILD_EXEC = main.exe
+BUILD_EXEC = gomoku_app.exe
 
-BIN = bin
 SRC = src
 TEST = test
 
+OUTPUT = buildOut
+BIN = $(OUTPUT)/bin
+
 EXECUTABLE = gomoku
 
-.PHONY : all build clean compile dirs format refresh test
+.PHONY : all build clean compile format refresh refresh-all test
 
-all : compile test
+all : build test
 
 clean :
-	rm -fr $(BIN)
+	rm -fr $(OUTPUT)
 	dune clean
 
-refresh : clean all
+format :
+	find $(SRC) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
+	find $(TEST) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
 
-dirs :
+compile :
 	mkdir -p $(BIN)
-
-build : format all
-
-compile : dirs
 	dune build
+	@echo
 	cp $(BUILD_SRC)/$(BUILD_EXEC) $(BIN)/$(EXECUTABLE)
 
 test :
 	dune runtest
 
-format :
-	find $(SRC) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
-	find $(TEST) -regex .+\.mli? -exec ocamlformat -i {} \; -exec ocp-indent -i {} \;
+build : format compile
+
+refresh : clean build
+
+refresh-all : clean all

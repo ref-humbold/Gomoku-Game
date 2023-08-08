@@ -16,17 +16,14 @@ LET'S PLAY GOMOKU!
 ### Standard build & run
 > *versions last used by the author are in double parentheses and italic*
 
-General:
 + Linux-based operating system \
   *((Debian testing))*
 + [OCaml](https://ocaml.org) \
-  *((APT package `ocaml`, 4.11.+))*
+  *((OPAM package `ocaml`, 4.14.+))*
 + [Dune](https://dune.build) \
-  *((OPAM package `dune`, 2.7.+))*
+  *((OPAM package `dune`, 3.10.+))*
 + [GNU Make](https://www.gnu.org/software/make) \
   *((APT package `make`, 4.3.+))*
-
-Additional libraries:
 + Graphics \
   *((OPAM package `graphics`, 5.1.+))*
 
@@ -36,7 +33,7 @@ Additional libraries:
 
 ### Automated formatting
 + Ocamlformat \
-  *((OPAM package `ocamlformat`, 0.16.+))*
+  *((OPAM package `ocamlformat`, 0.26.+))*
 + Ocp-indent \
   *((OPAM package `ocp-indent`, 1.8.+))*
 
@@ -46,16 +43,17 @@ Additional libraries:
 Gomoku can be built using **Dune** with help of **GNU Make**.
 
 Possible Make targets are:
-+ `make`, `make all` - compile source files & link executable & run unit tests
-+ `make build` - format source files & compile source files & link executable & run unit tests
++ `make`, `make all` - format source files & compile source files & link executable & run unit tests
++ `make build` - format source files & compile source files & link executable
 + `make compile` - compile source files & link executable
 + `make test` - run unit tests
 + `make format` - format source files
 + `make clean` - remove additional build files
-+ `make refresh` - remove additional build files & compile source files & link executable & run unit tests
++ `make refresh` - remove additional build files & compile source files & link executable
++ `make refresh-all` - remove additional build files & compile source files & link executable & run unit tests
 
 ## How to run?
-Gomoku can be run directly using the executable file in the `bin` directory:
+Gomoku can be run directly using the executable file in the `buildOut/bin` directory:
 ```sh
-$ /path-to-project-directory/bin/gomoku
+$ /path-to-project-directory/buildOut/bin/gomoku
 ```

@@ -2,4 +2,9 @@
  (name gomokuLib)
  (libraries graphics))
 
+(env
+ (dev
+  (flags
+   (:standard -warn-error -A -w +A-70))))
+
 (include_subdirs unqualified)
