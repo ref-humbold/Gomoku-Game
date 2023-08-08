@@ -1,7 +1,5 @@
-bin/
-dist/
 _build/
-doc/
+buildOut/
 *.install
 .merlin
 
