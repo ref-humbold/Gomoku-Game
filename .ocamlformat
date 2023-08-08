@@ -1,9 +1,10 @@
-# VERSION 0.24
+# VERSION 0.26
 
 assignment-operator = end-line
 break-before-in = fit-or-vertical
 break-cases = fit-or-vertical
 break-collection-expressions = fit-or-vertical
+break-colon = after
 break-fun-decl = fit-or-vertical
 break-fun-sig = fit-or-vertical
 break-infix = wrap
