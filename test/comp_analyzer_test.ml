@@ -6,7 +6,7 @@ open Comp_analyzer
 (* comp_analyzer_Test_list *)
 
 let convert_to_moves__then_sorted_moves_list =
-  "convert_to_moves Then sorted moves list" >:: fun _ ->
+  __FUNCTION__ >:: fun _ ->
     (* given *)
     let bindings =
       [ (GP (10, 10), [(5, Comp); (3, Human); (3, Human)]);
@@ -31,6 +31,6 @@ let comp_analyzer_Test_list = test_list [convert_to_moves__then_sorted_moves_lis
 
 (* comp_analyzer_Test *)
 
-let comp_player_Test = "Tests: Computer analyzer" >::: [comp_analyzer_Test_list]
+let comp_player_Test = __MODULE__ >::: [comp_analyzer_Test_list]
 
 let _ = run_test_tt_main comp_player_Test
